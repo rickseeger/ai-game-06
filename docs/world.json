@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "title": "Emberglow Hollow: The Long Dusk",
+  "artDirection": "Emberglow Hollow (direction B) - approved, docs/ART_DIRECTIONS.md",
+  "implementation": "Python 3.14 + pygame-ce 2.5.x, fixed 2:1 isometric, painter's-algorithm depth sort - DECISION.md",
+  "story": "Relight the Heart-Lantern before the first frost, and ring the hollow bell so the fireflies come home.",
+  "gridSize": 9,
+  "initial": {
+    "room": "gate",
+    "position": [4, 6],
+    "flags": [],
+    "inventory": []
+  },
+  "items": {
+    "crank_handle": { "name": "Crank Handle", "use": "unjam the mill-wheel at the Crank Socket" },
+    "glass_flask":  { "name": "Glass Flask", "use": "fill with mill-water at the Water Spout" },
+    "full_flask":   { "name": "Glass Flask, full", "use": "give to Bramble to quench the lens" },
+    "ember_seed":   { "name": "Ember-Seed", "use": "plant in the Seed Cradle under the Heart-Lantern" },
+    "lens":         { "name": "Dew-Cooled Lens", "use": "mount on the Lens Mount to focus the light" }
+  },
+  "characters": {
+    "mallow":  { "name": "Mallow", "role": "gatekeeper and lantern-tender" },
+    "bramble": { "name": "Bramble", "role": "forge-smith" }
+  },
+  "rooms": {
+    "gate": {
+      "title": "Hollow Gate",
+      "palette": ["cream_parch", "moss_green", "hearth_amber", "pumpkin"],
+      "mood": "village common, mushroom-roof cottages, cobbles, dusk",
+      "objects": {
+        "mallow": [2, 3],
+        "hollow_bell": [6, 3],
+        "hill_stair": [5, 1]
+      }
+    },
+    "market": {
+      "title": "Forge Market",
+      "palette": ["hearth_amber", "honey_gold", "russet", "pumpkin"],
+      "mood": "warm forge under a canvas awning",
+      "objects": {
+        "bramble": [2, 3],
+        "forge": [6, 3]
+      }
+    },
+    "mill": {
+      "title": "Mill Court",
+      "palette": ["russet", "bark_brown", "moss_green", "brook"],
+      "mood": "wooden waterwheel at the hollow's edge",
+      "objects": {
+        "crank_socket": [2, 3],
+        "water_spout": [6, 3]
+      }
+    },
+    "greenhouse": {
+      "title": "Firefly Greenhouse",
+      "palette": ["moss_green", "fern_deep", "firefly_glow", "cream_parch"],
+      "mood": "glass greenhouse glowing with drifting fireflies",
+      "objects": {
+        "ember_seed": [4, 3],
+        "mural": [2, 2]
+      }
+    },
+    "crown": {
+      "title": "Lantern Crown",
+      "palette": ["bark_brown", "fern_deep", "moss_green", "hearth_amber"],
+      "mood": "hilltop lantern-crown tree, dark and waiting",
+      "objects": {
+        "seed_cradle": [3, 3],
+        "lens_mount": [5, 3],
+        "focus_wheel": [4, 6]
+      }
+    }
+  },
+  "edges": [
+    { "a": "gate", "a_port": [8, 4], "b": "market", "b_port": [0, 4], "requires": [] },
+    { "a": "market", "a_port": [4, 0], "b": "mill", "b_port": [4, 8], "requires": [] },
+    { "a": "mill", "a_port": [8, 4], "b": "greenhouse", "b_port": [0, 4], "requires": ["water_flowing"] },
+    { "a": "gate", "a_port": [4, 0], "b": "crown", "b_port": [4, 8], "requires": ["stair_open"] }
+  ],
+  "actions": [
+    {
+      "id": "meet_mallow", "room": "gate", "target": "mallow",
+      "requires": [], "needs": [], "consume": [],
+      "grant": ["crank_handle"], "flags": ["met_mallow"]
+    },
+    {
+      "id": "request_flask", "room": "market", "target": "bramble",
+      "requires": [], "needs": [], "consume": [],
+      "grant": ["glass_flask"], "flags": ["flask_received"]
+    },
+    {
+      "id": "turn_wheel", "room": "mill", "target": "crank_socket",
+      "requires": [], "needs": ["crank_handle"], "consume": ["crank_handle"],
+      "grant": [], "flags": ["water_flowing"]
+    },
+    {
+      "id": "fill_flask", "room": "mill", "target": "water_spout",
+      "requires": ["water_flowing"], "needs": ["glass_flask"], "consume": ["glass_flask"],
+      "grant": ["full_flask"], "flags": ["flask_filled"]
+    },
+    {
+      "id": "take_seed", "room": "greenhouse", "target": "ember_seed",
+      "requires": ["water_flowing"], "needs": [], "consume": [],
+      "grant": ["ember_seed"], "flags": ["seed_taken"]
+    },
+    {
+      "id": "cool_lens", "room": "market", "target": "bramble",
+      "requires": [], "needs": ["full_flask"], "consume": ["full_flask"],
+      "grant": ["lens"], "flags": ["lens_ready"]
+    },
+    {
+      "id": "open_stair", "room": "gate", "target": "mallow",
+      "requires": ["lens_ready", "seed_taken"], "needs": [], "consume": [],
+      "grant": [], "flags": ["stair_open"]
+    },
+    {
+      "id": "mount_lens", "room": "crown", "target": "lens_mount",
+      "requires": ["stair_open"], "needs": ["lens"], "consume": ["lens"],
+      "grant": [], "flags": ["lens_mounted"]
+    },
+    {
+      "id": "plant_seed", "room": "crown", "target": "seed_cradle",
+      "requires": ["stair_open"], "needs": ["ember_seed"], "consume": ["ember_seed"],
+      "grant": [], "flags": ["seed_planted"]
+    },
+    {
+      "id": "kindle_lantern", "room": "crown", "target": "focus_wheel",
+      "requires": ["lens_mounted", "seed_planted"], "needs": [], "consume": [],
+      "grant": [], "flags": ["lantern_lit"]
+    },
+    {
+      "id": "ring_bell", "room": "gate", "target": "hollow_bell",
+      "requires": ["lantern_lit"], "needs": [], "consume": [],
+      "grant": [], "flags": ["ended"]
+    }
+  ],
+  "terminalFlag": "ended",
+  "ending": "The Heart-Lantern relit and the bell rung, the fireflies come home over the ridge and Mallow's companion returns. Title: 'the fireflies came home.'"
+}

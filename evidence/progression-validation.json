@@ -1,0 +1,79 @@
+{
+  "result": "passed",
+  "title": "Emberglow Hollow: The Long Dusk",
+  "artDirection": "Emberglow Hollow (direction B) - approved, docs/ART_DIRECTIONS.md",
+  "scope": "Authored symbolic progression and coarse grid; not implemented movement, visuals, save code, or a game playthrough",
+  "rooms": 5,
+  "actions": 11,
+  "topologicalOrder": [
+    "meet_mallow",
+    "request_flask",
+    "turn_wheel",
+    "fill_flask",
+    "take_seed",
+    "cool_lens",
+    "open_stair",
+    "mount_lens",
+    "plant_seed",
+    "kindle_lantern",
+    "ring_bell"
+  ],
+  "geometry": {
+    "gate": {
+      "walkableTiles": 48,
+      "solidProps": 3,
+      "portals": 2,
+      "allInteractionStandpointsReachable": true
+    },
+    "market": {
+      "walkableTiles": 49,
+      "solidProps": 2,
+      "portals": 2,
+      "allInteractionStandpointsReachable": true
+    },
+    "mill": {
+      "walkableTiles": 49,
+      "solidProps": 2,
+      "portals": 2,
+      "allInteractionStandpointsReachable": true
+    },
+    "greenhouse": {
+      "walkableTiles": 48,
+      "solidProps": 2,
+      "portals": 1,
+      "allInteractionStandpointsReachable": true
+    },
+    "crown": {
+      "walkableTiles": 47,
+      "solidProps": 3,
+      "portals": 1,
+      "allInteractionStandpointsReachable": true
+    }
+  },
+  "reachableStates": 70,
+  "transitions": 127,
+  "endingStates": 1,
+  "softlockedStates": 0,
+  "allRequiredActionsReachable": true,
+  "completionWitness": [
+    "meet_mallow",
+    "walk:market",
+    "request_flask",
+    "walk:mill",
+    "turn_wheel",
+    "walk:greenhouse",
+    "take_seed",
+    "walk:mill",
+    "fill_flask",
+    "walk:market",
+    "cool_lens",
+    "walk:gate",
+    "open_stair",
+    "walk:crown",
+    "mount_lens",
+    "plant_seed",
+    "kindle_lantern",
+    "walk:gate",
+    "ring_bell"
+  ]
+}
