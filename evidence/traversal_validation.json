@@ -1,0 +1,72 @@
+{
+  "node": "G13 node 3: world geometry + traversal (rendering-independent)",
+  "result": "passed",
+  "validate": {
+    "ok": true,
+    "problems": [],
+    "rooms": {
+      "gate": {
+        "walkable": 36,
+        "solid": 15,
+        "obstacles": 12,
+        "objects": 3,
+        "portals": 2,
+        "reachable": 36,
+        "connected": true
+      },
+      "market": {
+        "walkable": 35,
+        "solid": 16,
+        "obstacles": 14,
+        "objects": 2,
+        "portals": 2,
+        "reachable": 35,
+        "connected": true
+      },
+      "mill": {
+        "walkable": 38,
+        "solid": 13,
+        "obstacles": 11,
+        "objects": 2,
+        "portals": 2,
+        "reachable": 38,
+        "connected": true
+      },
+      "greenhouse": {
+        "walkable": 40,
+        "solid": 10,
+        "obstacles": 8,
+        "objects": 2,
+        "portals": 1,
+        "reachable": 40,
+        "connected": true
+      },
+      "crown": {
+        "walkable": 36,
+        "solid": 14,
+        "obstacles": 11,
+        "objects": 3,
+        "portals": 1,
+        "reachable": 36,
+        "connected": true
+      }
+    },
+    "worldWalkable": 177,
+    "worldReachable": 177,
+    "gatedRoomsLockedWithoutFlags": [
+      "crown",
+      "greenhouse"
+    ],
+    "gatedRoomsOpenWithFlags": [
+      "crown",
+      "greenhouse"
+    ],
+    "terminalFlag": "ended"
+  },
+  "tests": {
+    "command": "python3 -m unittest tests.test_world  (SDL_VIDEODRIVER=dummy)",
+    "summary": "Ran 24 tests in 0.014s | OK",
+    "exit_code": 0
+  },
+  "generated": "2026-09-14T23:14:16.754870+00:00"
+}

@@ -28,6 +28,34 @@ player idle bob, bell sway).
 - `emberglow/checks.py`   -- automated code-level verification (no vision tool)
 - `tests/`                -- unit tests (projection, palette, draw-order occlusion)
 
+## Node 3 deliverable: world geometry + traversal (rendering-independent)
+
+The walkable-space layer for the whole 5-room hollow, decoupled from all drawing
+code so it is tested headless (no pygame, no display, SDL dummy driver):
+
+- `emberglow/worldmap.py` -- hand-authored solid (impassable) obstacle cells per
+  room (cottages, the forge block, the waterwheel + mill-race, plant beds, the
+  hilltop ridge + lantern-crown tree).
+- `emberglow/world.py`   -- grid geometry + traversal contract: walkable vs solid
+  cells, 4-directional movement with collision, room portals (including gated
+  portals closed by flags), spawn validity, reachability, pathfinding, and a
+  `validate()` self-check of the whole contract.
+- `tests/test_world.py`  -- 24 tests: legal movement, blocked movement, boundary
+  cases, transitions (incl. round trips), closed-portal gating, spawn validity,
+  no-trap reachability, and a full 11-action on-foot walkthrough.
+- `tools/demo_traversal.py` -- a runtime traversal demonstration that walks a real
+  route (legal + blocked moves, transitions, gate enforcement, the full 11-action
+  progression) and exits 0 on success.
+
+Grid model: 9x9 per room; coordinates are (x, y) with x west->east and y
+north->south. The non-portal outer ring is the hollow's enclosing treeline
+(impassable); interactable objects/characters and the authored obstacles are
+solid; stepping onto a portal cell teleports you one step into the paired room,
+and a portal whose edge declares `requires` flags is closed until those flags are
+present (which is what prevents progression bypasses). The fixed 2:1 isometric
+mapping of these grid steps onto the on-screen diagonals is rendering's concern;
+this layer is agnostic to it.
+
 ## Install (one command)
 
     pip install -r requirements.txt
@@ -45,6 +73,8 @@ player idle bob, bell sway).
 
     python3 -m unittest discover tests        # projection / palette / occlusion units
     python3 -m emberglow.main --check         # pixel sampling + geometry + draw order
+    python3 tools/demo_traversal.py            # node 3: traversal demo (exits 0)
+    python3 -m unittest tests.test_world -v    # node 3: world geometry/traversal tests
 
 `--check` renders the 1280x720 scene headlessly (SDL dummy driver) and asserts:
 fixed 2:1 projection, diamond 2:1 bounds, painter's-algorithm draw order (tiles
@@ -59,6 +89,11 @@ evidence/check_results.json; captured frames in evidence/.
 ## Status
 
 Node 2 (visual foundation + representative scene) is complete and self-verifying.
-Rendering and artistic coherence are owned here; navigation, quest logic, audio, and
-final human aesthetic judgment (Rick at node 8) are out of scope for this node.
 See docs/NODE2_SCENE.md for the scene's composition and the unverified visual notes.
+
+Node 3 (rendering-independent world geometry + traversal) is complete and
+self-verifying: 177 walkable cells across 5 rooms, all progression-critical
+locations reachable, gated rooms (greenhouse, crown) locked until their flags,
+and a full 11-action on-foot walkthrough passing headless. Traversal owns the
+walkable space and room graph; art, rendering, input handling, quest logic, and
+audio remain separate later nodes. Final human aesthetic judgment is Rick's.
