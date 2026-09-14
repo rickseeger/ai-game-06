@@ -1,0 +1,210 @@
+{
+  "size": [
+    1280,
+    720
+  ],
+  "features": {
+    "player@4,6:honey_gold": {
+      "hits": 123,
+      "total": 391,
+      "frac": 0.315,
+      "present": true
+    },
+    "mallow@2,3:russet": {
+      "hits": 185,
+      "total": 720,
+      "frac": 0.257,
+      "present": true
+    },
+    "bell@6,3:honey_gold": {
+      "hits": 248,
+      "total": 1258,
+      "frac": 0.197,
+      "present": true
+    },
+    "cottage@1,2:pumpkin": {
+      "hits": 830,
+      "total": 2068,
+      "frac": 0.401,
+      "present": true
+    },
+    "stair@5,1:fern_deep": {
+      "hits": 442,
+      "total": 1643,
+      "frac": 0.269,
+      "present": true
+    }
+  },
+  "ui": {
+    "dialogue_cream_px": 7748,
+    "dialogue_text_px": 316,
+    "inventory_selected_glow_px": 78,
+    "interface_present": true
+  },
+  "unique_colors": 10722,
+  "counts": {
+    "warm": 59864,
+    "cool": 129122,
+    "foliage": 12984,
+    "glow": 203,
+    "warm_glow": 626,
+    "black": 0,
+    "total": 230400
+  },
+  "geometry": {
+    "iso_slope_2_to_1": true,
+    "iso_diag_symmetric": true,
+    "diamond_2_to_1": true,
+    "diamond_bounds": [
+      352,
+      200,
+      928,
+      488
+    ]
+  },
+  "draw_order": {
+    "tile_order_monotonic": true,
+    "props_after_own_tile": true,
+    "far_before_near": true,
+    "player_over_background_tiles": true,
+    "far_prop": "fence",
+    "near_prop": "grass_tuft",
+    "drawable_count": 159
+  },
+  "flat_fills": {
+    "path_tile": {
+      "sample": "cream_parch",
+      "rgb": [
+        238,
+        227,
+        206
+      ],
+      "dE": 20.3,
+      "within_tolerance": true
+    },
+    "grass_tile": {
+      "sample": "moss_green",
+      "rgb": [
+        105,
+        156,
+        73
+      ],
+      "dE": 3.0,
+      "within_tolerance": true
+    },
+    "raised_top": {
+      "sample": "moss_green",
+      "rgb": [
+        107,
+        158,
+        73
+      ],
+      "dE": 1.0,
+      "within_tolerance": true
+    }
+  },
+  "side_darker_than_top": true,
+  "top_rgb": [
+    107,
+    158,
+    73
+  ],
+  "side_rgb": [
+    65,
+    110,
+    58
+  ],
+  "sky_corner_rgb": [
+    34,
+    27,
+    49
+  ],
+  "sky_corner_violet": true,
+  "deterministic": true,
+  "animation_changes_frame": true,
+  "palette": {
+    "hearth_amber": [
+      245,
+      166,
+      35
+    ],
+    "honey_gold": [
+      247,
+      201,
+      72
+    ],
+    "pumpkin": [
+      232,
+      122,
+      62
+    ],
+    "russet": [
+      201,
+      111,
+      74
+    ],
+    "moss_green": [
+      107,
+      158,
+      74
+    ],
+    "fern_deep": [
+      63,
+      111,
+      58
+    ],
+    "cream_parch": [
+      251,
+      239,
+      216
+    ],
+    "bark_brown": [
+      107,
+      74,
+      50
+    ],
+    "firefly_glow": [
+      217,
+      242,
+      106
+    ],
+    "twilight_violet": [
+      91,
+      74,
+      120
+    ],
+    "brook": [
+      111,
+      168,
+      184
+    ]
+  },
+  "checks": {
+    "size_is_1280x720": true,
+    "not_blank": true,
+    "warm_surfaces_present": true,
+    "cool_violet_ambient_present": true,
+    "foliage_present": true,
+    "firefly_glow_present": true,
+    "warm_lantern_glow_present": true,
+    "no_pure_black": true,
+    "path_tile_on_palette": true,
+    "grass_tile_on_palette": true,
+    "raised_top_on_palette": true,
+    "side_darker_than_top": true,
+    "sky_corner_violet": true,
+    "iso_slope_2_to_1": true,
+    "diamond_2_to_1": true,
+    "tile_order_monotonic": true,
+    "characters_and_props_present": true,
+    "interface_present": true,
+    "props_after_own_tile": true,
+    "far_before_near": true,
+    "deterministic": true,
+    "animation_changes_frame": true
+  },
+  "ok": true,
+  "unit_tests_run": 11,
+  "unit_tests_failed": 0,
+  "unit_tests_ok": true
+}

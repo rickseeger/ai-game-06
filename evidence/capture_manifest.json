@@ -1,0 +1,30 @@
+{
+  "frames": [
+    {
+      "file": "evidence/scene_gate_t00.png",
+      "t": 0.0
+    },
+    {
+      "file": "evidence/scene_gate_t01.png",
+      "t": 0.16
+    },
+    {
+      "file": "evidence/scene_gate_t02.png",
+      "t": 0.32
+    },
+    {
+      "file": "evidence/scene_gate_t03.png",
+      "t": 0.48
+    },
+    {
+      "file": "evidence/scene_gate_t04.png",
+      "t": 0.64
+    },
+    {
+      "file": "evidence/scene_gate_t05.png",
+      "t": 0.8
+    }
+  ],
+  "animates": true,
+  "note": "firefly drift + glow flicker + player idle bob (restrained)"
+}
