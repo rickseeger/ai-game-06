@@ -1,0 +1,38 @@
+{
+  "size": [
+    1280,
+    720
+  ],
+  "unique_colors": 4885,
+  "warm_px": 5176,
+  "cool_shadow_px": 194715,
+  "glow_px": 776,
+  "palette_coverage_frac": 1.0,
+  "grass_top_rgb": [
+    127,
+    170,
+    79
+  ],
+  "grass_is_green": true,
+  "hill_top_rgb": [
+    109,
+    163,
+    74
+  ],
+  "hill_side_rgb": [
+    72,
+    107,
+    50
+  ],
+  "side_darker_than_top": true,
+  "checks": {
+    "size_is_1280x720": true,
+    "not_blank": true,
+    "warm_light_present": true,
+    "cool_shadow_present": true,
+    "firefly_glow_present": true,
+    "grass_is_green": true,
+    "side_darker_than_top (2.5D)": true
+  },
+  "ok": true
+}
