@@ -8,6 +8,22 @@ dusk, lit as if by lanterns (warm honeyed surfaces vs a single cool Twilight-Vio
 ambient). Full palette + cohesion rules: docs/ART_DIRECTIONS.md. Bounded adventure
 design (5 rooms, 11 actions): docs/ADVENTURE_DESIGN.md + docs/world.json.
 
+## Quick start (Linux)
+
+One command to install and launch the game (from a fresh clone):
+
+    python3 -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/python -m emberglow.main
+
+Controls: WASD / arrows to move; E / Space / Enter to interact or talk; X examine,
+T talk, G take, U use the selected item; Tab / [ cycle the selected inventory
+item; Escape dismiss dialogue; Q quit. Goal: relight the Heart-Lantern (the exact
+11-step route is in docs/WALKTHROUGH.md).
+
+No display? Verify headlessly instead:
+
+    .venv/bin/python -m emberglow.main --check        # render + full automated verification
+    .venv/bin/python -m unittest discover -s tests    # 144 unit tests
+
 ## What is here (node 2 deliverable)
 
 The **fixed-isometric visual foundation** plus **one representative art-complete
@@ -123,52 +139,58 @@ dismisses dialogue, Q quits.
 
 ## Install (one command)
 
-    pip install -r requirements.txt
+    python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 
-(Requires Python 3.10+ and pygame-ce 2.5.x. No other dependencies, no build step.)
+Requires Python 3.10+ (pygame-ce 2.5.8 ships manylinux wheels for CPython 3.10
+through 3.15). No other dependencies, no build step. All art is generated in
+code at runtime, so there are no image/audio assets to download. If your distro
+lacks `python3 -m venv`, install its python3-venv package first.
 
 ## Run
 
-    python3 -m emberglow.main                 # live game (real input: WASD/arrows)
-    python3 -m emberglow.main --input-check   # input-mapping + press/release tests
-    python3 -m emberglow.main --headless      # one frame -> evidence/scene_gate.png
-    python3 -m emberglow.main --capture 6     # animation frames -> evidence/
-    python3 -m emberglow.main --check         # render + full automated verification
-    python3 -m emberglow.main --market-check  # node 16: Forge Market scene verification
-    python3 -m emberglow.main --mill-check    # node 17: Mill Court scene verification
-    python3 -m emberglow.main --greenhouse-check  # node 18: Firefly Greenhouse scene verification
+    .venv/bin/python -m emberglow.main                # live game (real input: WASD/arrows)
+    .venv/bin/python -m emberglow.main --headless     # one frame -> evidence/scene_gate.png
+    .venv/bin/python -m emberglow.main --capture 6    # animation frames -> evidence/
+    .venv/bin/python -m emberglow.main --check        # render + full automated verification
+    .venv/bin/python -m emberglow.main --market-check      # node 16: Forge Market scene verification
+    .venv/bin/python -m emberglow.main --mill-check        # node 17: Mill Court scene verification
+    .venv/bin/python -m emberglow.main --greenhouse-check  # node 18: Firefly Greenhouse scene verification
+    .venv/bin/python -m emberglow.main --crown-check       # node 19: Lantern Crown scene verification
+    .venv/bin/python -m emberglow.main --population-check  # node 14: world.json catalog agreement
+    .venv/bin/python -m emberglow.main --input-check       # input-mapping + press/release tests
 
 ## Verify (automated, no vision)
 
-    python3 -m unittest discover tests        # projection / palette / occlusion / input / verbs
-    python3 -m emberglow.main --check         # pixel sampling + geometry + draw order + beats
-    python3 -m emberglow.main --market-check  # node 16: Forge Market room render + geometry + props
-    python3 -m emberglow.main --mill-check    # node 17: Mill Court room render + geometry + props
-    python3 -m emberglow.main --greenhouse-check  # node 18: Firefly Greenhouse room render + geometry + props
-    python3 -m emberglow.main --input-check   # node 4: key mapping + press/release
-    python3 tools/demo_input.py               # node 4: actual-input runtime trace + frame dumps
-    python3 tools/demo_traversal.py           # node 3: traversal demo (exits 0)
-    python3 tools/demo_adventure.py           # node 5: full 11-action playthrough + beats/feedback
-    python3 -m unittest tests.test_progression  # node 15: chain / out-of-order / softlock proof
-    python3 tools/demo_progression.py         # node 15: headless playthrough + lantern_lit/ended captures
+    .venv/bin/python -m unittest discover -s tests   # 144 tests: geometry/palette/world/input/verbs/scenes/progression
+    .venv/bin/python -m emberglow.main --check       # pixel sampling + geometry + draw order + beats + ending
+    .venv/bin/python -m emberglow.main --market-check      # node 16: Forge Market room render + geometry + props
+    .venv/bin/python -m emberglow.main --mill-check        # node 17: Mill Court room render + geometry + props
+    .venv/bin/python -m emberglow.main --greenhouse-check  # node 18: Firefly Greenhouse room render + geometry + props
+    .venv/bin/python -m emberglow.main --crown-check       # node 19: Lantern Crown room render + geometry + props
+    .venv/bin/python -m emberglow.main --population-check  # node 14: world.json catalog agreement
+    .venv/bin/python -m emberglow.main --input-check       # node 4: key mapping + press/release
+    .venv/bin/python tools/demo_input.py             # node 4: actual-input runtime trace + frame dumps
+    .venv/bin/python tools/demo_traversal.py         # node 3: traversal demo (exits 0)
+    .venv/bin/python tools/demo_adventure.py         # node 5: full 11-action playthrough + beats/feedback
+    .venv/bin/python -m unittest tests.test_progression  # node 15: chain / out-of-order / softlock proof
+    .venv/bin/python tools/demo_progression.py       # node 15: headless playthrough + lantern_lit/ended captures
 
-`--check` renders the 1280x720 scene headlessly (SDL dummy driver) and asserts:
-fixed 2:1 projection, diamond 2:1 bounds, painter's-algorithm draw order (tiles
-monotonic back-to-front, props after their own tile, far-before-near, player over
-background tiles), 2.5D extrusion (raised-tile side face darker than top face),
-on-palette flat fills (path / grass / raised grass), warm lit surfaces (R>=G>=B,
-R-B>=15), cool violet ambient (B>=R, never black), firefly + lantern glow presence,
-character/prop presence (player, Mallow, bell, cottage, stair), interface presence,
-and frame determinism + animation actually changing the frame. Results land in
-evidence/check_results.json; captured frames in evidence/.
+## Distribution & reproducibility (node 7)
 
-`tools/demo_input.py` posts real SDL key events through the event queue and drives
-the controller's tick loop, asserting movement, stopping (no stuck movement),
-target selection, interaction (meet_mallow grants the crank through the input
-path), dialogue dismissal, no unintended actions, and no ambiguous targeting --
-plus code-level frame checks that the controls hint, target glow, name label, and
-player are actually rendered. Frame dumps land in evidence/input_*.png; the trace
-in evidence/input_trace.json.
+The game is distributed as this repository itself -- an explicitly documented
+installation bundle -- because every asset is generated in code, so `git clone`
+plus the one-command install above is the complete distribution (no missing
+assets, no undeclared dependencies). A clean-room install has been verified
+end-to-end in a fresh disposable clone on CPython 3.14 and 3.12: the one-command
+install succeeds, `--headless` writes a frame, the full 144-test suite passes,
+and `--check` regenerates fresh evidence frames + JSON. The dependency and
+asset-license inventory is in docs/DEPENDENCIES.md.
+
+For an offline/air-gapped copy, a source tarball is made with:
+
+    git archive --format=tar.gz -o emberglow-hollow-<rev>.tar.gz HEAD
+
+Unpacking that tarball yields the identical one-command install and run recipe.
 
 ## Status
 
@@ -232,3 +254,10 @@ explicit step-by-step route. Verify with
 proof) and `python3 tools/demo_progression.py` (recorded headless playthrough +
 fresh lantern_lit and ended captures).
 
+
+Node 7 (reproducible Linux-only distribution) is complete and self-verifying:
+a fresh disposable clone installs with the one-command recipe, launches
+headless, passes the full 144-test suite, and `--check` regenerates fresh
+evidence frames + check JSON. The dependency/asset-license inventory is in
+docs/DEPENDENCIES.md; the single-command launch path is the "Quick start"
+above. No Windows deliverable is required.
