@@ -498,6 +498,153 @@ def market_scene_checks():
     return results
 
 
+def mill_feature_presence(surface, room, ox, oy):
+    """Confirm the Mill Court's key props are actually drawn (palette hit in box)."""
+    from .sprites import get_sprite
+    from .geometry import prop_anchor
+    feats = {}
+    for kind, gx, gy, name in [
+        ("waterwheel", 2, 2, "russet"),    # the wheel rim
+        ("mill_house", 7, 7, "bark_brown"), # the plank facade
+        ("timber_stack", 6, 1, "bark_brown"), # stacked logs
+        ("crank_socket", 2, 3, "russet"),   # the metal collar
+        ("water_spout", 6, 3, "russet"),    # the spout pipe
+    ]:
+        p = next(pp for pp in room.props if pp.kind == kind and pp.gx == gx and pp.gy == gy)
+        fx, fy = prop_anchor(gx, gy, p.h, ox, oy)
+        spr = get_sprite(kind, gx, gy)
+        x0, y0 = fx - spr.get_width() // 2, fy - spr.get_height() + 2
+        target = PALETTE[name]
+        hit = total = 0
+        for py in range(max(0, y0), min(surface.get_height(), y0 + spr.get_height()), 2):
+            for px in range(max(0, x0), min(surface.get_width(), x0 + spr.get_width()), 2):
+                total += 1
+                if dE(surface.get_at((px, py))[:3], target) <= 60:
+                    hit += 1
+        feats[f"{kind}@{gx},{gy}:{name}"] = {
+            "hits": hit, "total": total,
+            "frac": round(hit / max(1, total), 3),
+            "present": hit > 20,
+        }
+    return feats
+
+
+def mill_scene_checks():
+    """Node 17: render + verify the Mill Court room (no vision tool).
+
+    Renders headlessly (SDL dummy driver), samples pixels for palette/lighting
+    invariants, asserts fixed-isometric geometry + painter's draw order + 2.5D
+    extrusion + prop presence, dumps a frame + ASCII structure map, and writes
+    evidence/mill_check.json. Returns the results dict (with a boolean "ok").
+    """
+    from .scene import build_room_mill, render_room, layout
+    from . import ui
+    from .world import World
+    import json as _json, os as _os
+
+    room = build_room_mill()
+    t0 = 0.0
+    ox, oy = layout(room, 1280, 720)
+    surface = pygame.Surface((1280, 720))
+    render_room(surface, room, t0, ox, oy)
+    w, h = surface.get_size()
+
+    stats = _count_pixels(surface)
+    geom = geometry_checks(room, ox, oy)
+    order = market_draw_order_checks(room, t0, ox, oy)
+    fills = {
+        "court_tile": flat_fill_check(surface, 2, 4, ox, oy, "cream_parch"),
+        "grass_tile": flat_fill_check(surface, 8, 4, ox, oy, "moss_green"),
+    }
+    extrude = raised_tile_extrusion_check()
+    feats = mill_feature_presence(surface, room, ox, oy)
+
+    # determinism + animation actually changes the frame
+    s0b = pygame.Surface((w, h))
+    render_room(s0b, room, t0, ox, oy)
+    ident = pygame.image.tobytes(surface, "RGB") == pygame.image.tobytes(s0b, "RGB")
+    s1 = pygame.Surface((w, h))
+    render_room(s1, room, 0.4, ox, oy)
+    animated = pygame.image.tobytes(surface, "RGB") != pygame.image.tobytes(s1, "RGB")
+
+    # sky corner is cool violet (B >= R), never black
+    corner = surface.get_at((5, 5))[:3]
+    corner_violet = corner[2] >= corner[0] and corner[2] > 40
+
+    # UI frame (dump) + interface presence
+    ui_surface = pygame.Surface((w, h))
+    render_room(ui_surface, room, t0, ox, oy)
+    ui.draw_ui(ui_surface, room, ["", "", "", "", ""], 0, "the miller",
+               "The wheel stands still -- its water has gone quiet.")
+    ui_check = ui_presence(ui_surface)
+
+    # water_flowing beat: Brook water appears at the mill-race + spout (cool accent)
+    from . import worldreact
+    world = World()
+    room_flow = worldreact.build_scene_room(world, "mill", frozenset({"water_flowing"}))
+    fsurf = pygame.Surface((w, h))
+    render_room(fsurf, room_flow, t0, ox, oy)
+    water_before = _surface_count(surface, _is_water)
+    water_after = _surface_count(fsurf, _is_water)
+
+    results = {
+        "size": [w, h],
+        "features": feats,
+        "ui": ui_check,
+        "unique_colors": stats["unique_colors"],
+        "counts": {k: v for k, v in stats.items() if k != "unique_colors"},
+        "geometry": geom,
+        "draw_order": order,
+        "flat_fills": fills,
+        "extrusion": extrude,
+        "mill_footing_heights": {str(k): v for k, v in sorted(room.heights.items())},
+        "sky_corner_rgb": list(corner), "sky_corner_violet": corner_violet,
+        "deterministic": ident,
+        "animation_changes_frame": animated,
+        "water_flowing": {
+            "water_px_before": water_before, "water_px_after": water_after,
+            "changed": water_after > water_before + 10,
+        },
+    }
+
+    checks_dict = {
+        "size_is_1280x720": (w, h) == (1280, 720),
+        "not_blank": stats["unique_colors"] > 800,
+        "warm_surfaces_present": stats["warm"] > 5000,
+        "cool_violet_ambient_present": stats["cool"] > 20000,
+        "foliage_present": stats["foliage"] > 2000,
+        "firefly_glow_present": stats["glow"] > 3,
+        "warm_lantern_glow_present": stats["warm_glow"] > 200,
+        "no_pure_black": stats["black"] == 0,
+        "court_tile_on_palette": fills["court_tile"]["within_tolerance"],
+        "grass_tile_on_palette": fills["grass_tile"]["within_tolerance"],
+        "raised_tile_extrudes": extrude["side_darker_than_top"] and extrude["side_opaque"],
+        "mill_footing_raised": all(v == 1 for v in room.heights.values()),
+        "sky_corner_violet": corner_violet,
+        "iso_slope_2_to_1": geom["iso_slope_2_to_1"],
+        "diamond_2_to_1": geom["diamond_2_to_1"],
+        "tile_order_monotonic": order["tile_order_monotonic"],
+        "props_after_own_tile": order["props_after_own_tile"],
+        "far_before_near": order["far_before_near"],
+        "props_present": all(f["present"] for f in feats.values()),
+        "interface_present": ui_check["interface_present"],
+        "deterministic": ident,
+        "animation_changes_frame": animated,
+        "water_flowing_beat": results["water_flowing"]["changed"],
+    }
+    results["checks"] = checks_dict
+    results["ok"] = all(checks_dict.values())
+
+    _os.makedirs("evidence", exist_ok=True)
+    pygame.image.save(ui_surface, "evidence/mill_scene.png")
+    pygame.image.save(surface, "evidence/mill_scene_room.png")
+    with open("evidence/mill_scene.ascii.txt", "w") as f:
+        f.write(ascii_map(surface) + "\n")
+    with open("evidence/mill_check.json", "w") as f:
+        _json.dump(results, f, indent=2)
+    return results
+
+
 def feedback_tone_check():
     """Prove success vs failure feedback renders differently (dialogue + marker).
 

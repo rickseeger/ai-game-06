@@ -167,6 +167,68 @@ def build_room_market():
                 props, glows, fireflies)
 
 
+
+
+
+# --------------------------------------------------------------------------- #
+# Mill Court (node 17): a wooden waterwheel at the hollow's edge -- the mill
+# house, the mill-race Brook, the Crank Socket and the Water Spout. Matches node
+# 2's Hollow Gate and node 16's Forge Market in palette + visual language.
+# --------------------------------------------------------------------------- #
+def build_room_mill():
+    grid = 9
+    # paved court + paths to the south (market) and east (greenhouse) portals
+    court = {
+        (3, 3), (4, 3), (5, 3), (6, 3),
+        (2, 4), (3, 4), (4, 4), (5, 4), (6, 4), (7, 4),
+        (2, 5), (3, 5), (4, 5), (5, 5), (6, 5), (7, 5),
+        (3, 6), (4, 6), (5, 6),
+        (4, 7), (5, 7),
+    }
+    mill_footing = {(6, 6), (7, 6), (6, 7), (7, 7)}   # raised stone footing
+    path = court | mill_footing
+
+    heights = {cell: 1 for cell in mill_footing}
+
+    props = [
+        # the waterwheel (NW) + its crank socket
+        Prop("waterwheel", 2, 2),
+        Prop("crank_socket", 2, 3, interactable=True),
+        # mill-race channel (west edge; dry until water_flowing fills it)
+        Prop("mill_race", 1, 5), Prop("mill_race", 1, 6),
+        # the water spout (court)
+        Prop("water_spout", 6, 3, interactable=True),
+        # the mill house (SE, on a raised stone footing)
+        Prop("mill_house", 7, 7, h=1),
+        # stacked timber (NE)
+        Prop("timber_stack", 6, 1), Prop("timber_stack", 7, 1),
+        # warm lantern posts (west court, clear of the mill house)
+        Prop("lantern_post", 3, 6, glow="hearth_amber"),
+        Prop("lantern_post", 4, 7, glow="hearth_amber"),
+        # ambient greenery + ground props (cozy ground-dressing, as gate/market)
+        Prop("mushroom", 0, 7), Prop("mushroom", 8, 2), Prop("mushroom", 3, 7),
+        Prop("rock", 8, 3), Prop("rock", 0, 3), Prop("rock", 5, 2),
+        Prop("grass_tuft", 1, 4), Prop("grass_tuft", 3, 2), Prop("grass_tuft", 8, 5),
+        Prop("grass_tuft", 0, 6), Prop("grass_tuft", 2, 7), Prop("grass_tuft", 8, 7),
+        Prop("flower", 4, 2), Prop("flower", 5, 5), Prop("flower", 2, 6),
+        Prop("flower", 3, 5), Prop("flower", 8, 1), Prop("flower", 7, 5),
+        Prop("fence", 0, 2), Prop("fence", 0, 4),
+    ]
+
+    glows = [
+        Glow(3.0, 6.0, "hearth_amber", 62, 82),   # lantern post
+        Glow(4.0, 7.0, "hearth_amber", 54, 74),   # lantern post
+        Glow(7.0, 6.0, "honey_gold", 44, 66),     # mill house windows (warm)
+        Glow(6.0, 6.0, "honey_gold", 40, 60),     # mill house windows (warm)
+    ]
+
+    fireflies = [(3.1, 4.2), (5.3, 2.1), (4.6, 5.8), (7.4, 3.2), (2.4, 6.4),
+                 (6.2, 4.6), (5.1, 7.2), (3.8, 2.6), (1.7, 7.1), (8.3, 2.6)]
+
+    return Room(grid, "Mill Court", "a wooden waterwheel at the hollow's edge",
+                heights, path, props, glows, fireflies)
+
+
 # --------------------------------------------------------------------------- #
 # Drawable list (pure, testable) + painter's sort
 # --------------------------------------------------------------------------- #

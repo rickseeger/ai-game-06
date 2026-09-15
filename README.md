@@ -135,12 +135,14 @@ dismisses dialogue, Q quits.
     python3 -m emberglow.main --capture 6     # animation frames -> evidence/
     python3 -m emberglow.main --check         # render + full automated verification
     python3 -m emberglow.main --market-check  # node 16: Forge Market scene verification
+    python3 -m emberglow.main --mill-check    # node 17: Mill Court scene verification
 
 ## Verify (automated, no vision)
 
     python3 -m unittest discover tests        # projection / palette / occlusion / input / verbs
     python3 -m emberglow.main --check         # pixel sampling + geometry + draw order + beats
     python3 -m emberglow.main --market-check  # node 16: Forge Market room render + geometry + props
+    python3 -m emberglow.main --mill-check    # node 17: Mill Court room render + geometry + props
     python3 -m emberglow.main --input-check   # node 4: key mapping + press/release
     python3 tools/demo_input.py               # node 4: actual-input runtime trace + frame dumps
     python3 tools/demo_traversal.py           # node 3: traversal demo (exits 0)
@@ -194,4 +196,12 @@ is now an art-complete scene (raised brick forge hearth + anvil, canvas-
 awning stalls, crates, lantern posts, and Bramble the forge-smith) built to
 node 2's palette + visual language and wired into the live game. See
 docs/NODE16_SCENE.md; verify with `python3 -m emberglow.main --market-check`.
+
+Node 17 (Mill Court art) is complete and self-verifying: the mill room is now
+an art-complete scene (russet waterwheel, stone-lined mill-race Brook channel,
+Crank Socket + Water Spout, bark-brown plank mill house on a raised footing,
+stacked timber, lantern posts) built to node 2's palette + visual language and
+wired into the live game, including the water_flowing beat (Brook water fills
+the race + pours from the spout). See docs/NODE17_SCENE.md; verify with
+`python3 -m emberglow.main --mill-check`.
 

@@ -182,7 +182,7 @@
   "world_beat_checks": {
     "water_flowing": {
       "water_px_before": 0,
-      "water_px_after": 167,
+      "water_px_after": 187,
       "changed": true
     },
     "lens_ready": {
@@ -255,7 +255,7 @@
     "success_failure_feedback_distinct": true
   },
   "ok": true,
-  "unit_tests_run": 92,
+  "unit_tests_run": 101,
   "unit_tests_failed": 0,
   "unit_tests_ok": true
 }

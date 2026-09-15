@@ -510,11 +510,137 @@ def get_sprite(kind, gx=0, gy=0):
             "forge": build_forge, "forge_kiln": build_forge_kiln,
             "stall": build_stall, "crate": build_crate, "bramble": build_bramble,
             "marker": build_marker,
+            "waterwheel": build_waterwheel, "mill_house": build_mill_house,
+            "timber_stack": build_timber_stack, "mill_race": build_mill_race,
+            "crank_socket": build_crank_socket, "water_spout": build_water_spout,
+            "spout_flow": build_spout_flow,
             "seed": build_seed, "seed_bed": build_seed_bed, "water": build_water,
             "forge_flash": build_forge_flash, "stair_light": build_stair_light,
         }
         _sprite_cache[key] = builders[kind](gx, gy)
     return _sprite_cache[key]
+
+
+
+# --------------------------------------------------------------------------- #
+# Mill Court props (node 17): waterwheel, mill house, timber, mill-race,
+# crank socket, water spout -- the third art-complete room, to node 2's standard.
+# --------------------------------------------------------------------------- #
+def build_waterwheel(gx, gy):
+    s = new_surf(150, 150)
+    cx, cy, r = 75, 75, 56
+    # outer rim (russet) + inner rim (bark) as rings (SRCALPHA: grass shows through)
+    pygame.draw.circle(s, (*PALETTE["russet"], 255),
+                       (cx * SCALE, cy * SCALE), r * SCALE, width=11 * SCALE)
+    pygame.draw.circle(s, (*PALETTE["bark_brown"], 255),
+                       (cx * SCALE, cy * SCALE), (r - 9) * SCALE, width=5 * SCALE)
+    # spokes
+    for i in range(8):
+        ang = i * math.pi / 4.0
+        x2 = cx + int(round(math.cos(ang) * (r - 8)))
+        y2 = cy + int(round(math.sin(ang) * (r - 8)))
+        pygame.draw.line(s, (*PALETTE["bark_brown"], 255),
+                         (cx * SCALE, cy * SCALE), (x2 * SCALE, y2 * SCALE), 4 * SCALE)
+    # rim paddles (russet nubs)
+    for i in range(12):
+        ang = i * math.pi / 6.0
+        px = cx + int(round(math.cos(ang) * r))
+        py = cy + int(round(math.sin(ang) * r))
+        circle(s, PALETTE["russet"], px, py, 5)
+    # hub + axle
+    circle(s, PALETTE["bark_brown"], cx, cy, 13)
+    circle(s, PALETTE["russet"], cx, cy, 7)
+    circle(s, PALETTE["honey_gold"], cx, cy, 3)
+    return finish(s)
+
+
+def build_mill_house(gx, gy):
+    s = new_surf(110, 110)
+    # pitched russet roof
+    polygon(s, PALETTE["russet"], [(14, 40), (55, 8), (96, 40)])
+    polygon(s, darken(PALETTE["russet"], 0.8), [(14, 40), (55, 8), (55, 40)])
+    rect(s, darken(PALETTE["russet"], 0.82), (52, 4, 8, 5))   # ridge cap
+    # bark-brown plank facade
+    rect(s, PALETTE["bark_brown"], (22, 40, 66, 62))
+    for y in (52, 64, 76, 88):
+        rect(s, darken(PALETTE["bark_brown"], 0.8), (22, y, 66, 2))
+    # door + warm windows
+    rect(s, PALETTE["cream_parch"], (44, 72, 18, 30))
+    rect(s, darken(PALETTE["bark_brown"], 0.85), (47, 76, 6, 6))
+    rect(s, PALETTE["hearth_amber"], (66, 48, 14, 12))
+    rect(s, PALETTE["honey_gold"], (68, 50, 10, 8))
+    rect(s, PALETTE["hearth_amber"], (28, 48, 14, 12))
+    rect(s, PALETTE["honey_gold"], (30, 50, 10, 8))
+    # mill chute (russet) on the east side
+    rect(s, PALETTE["russet"], (84, 34, 10, 36))
+    rect(s, darken(PALETTE["russet"], 0.8), (87, 34, 3, 36))
+    # warm rim light NW
+    polygon(s, lighten(PALETTE["bark_brown"], 0.14),
+            [(22, 40), (30, 40), (22, 102), (22, 40)])
+    painterly_repaint(s, (22, 40, 66, 62), PALETTE["bark_brown"], gx, gy)
+    painterly_repaint(s, (14, 8, 82, 34), PALETTE["russet"], gx, gy)
+    return finish(s)
+
+
+def build_timber_stack(gx, gy):
+    s = new_surf(60, 54)
+    for i in range(3):
+        y = 12 + i * 14
+        rect(s, PALETTE["bark_brown"], (8, y, 44, 10))
+        ellipse(s, PALETTE["russet"], (46, y, 12, 10))
+        rect(s, darken(PALETTE["bark_brown"], 0.78), (8, y + 7, 44, 3))
+    painterly_repaint(s, (8, 12, 44, 40), PALETTE["bark_brown"], gx, gy)
+    return finish(s)
+
+
+def build_mill_race(gx, gy):
+    s = new_surf(64, 32)
+    # stone-lined channel (russet) with a dry mossy bed (Brook water fills it later)
+    ellipse(s, PALETTE["russet"], (4, 4, 56, 24))
+    ellipse(s, mix(PALETTE["cream_parch"], PALETTE["twilight_violet"], 0.12), (11, 8, 42, 16))
+    ellipse(s, mix(PALETTE["moss_green"], PALETTE["bark_brown"], 0.35), (18, 12, 28, 8))
+    painterly_repaint(s, (4, 4, 56, 24), PALETTE["russet"], gx, gy)
+    return finish(s)
+
+
+def build_crank_socket(gx, gy):
+    s = new_surf(56, 60)
+    # wooden housing post
+    rect(s, PALETTE["bark_brown"], (12, 32, 32, 24))
+    rect(s, darken(PALETTE["bark_brown"], 0.82), (12, 50, 32, 6))
+    # russet metal collar + side bracket
+    rect(s, PALETTE["russet"], (16, 22, 24, 12))
+    polygon(s, PALETTE["russet"], [(40, 30), (52, 30), (52, 40), (40, 40)])
+    # honey-gold socket mouth (where the crank handle inserts)
+    circle(s, PALETTE["honey_gold"], 28, 22, 7)
+    circle(s, darken(PALETTE["honey_gold"], 0.7), 28, 22, 3)
+    painterly_repaint(s, (12, 32, 32, 24), PALETTE["bark_brown"], gx, gy)
+    return finish(s)
+
+
+def build_water_spout(gx, gy):
+    s = new_surf(56, 64)
+    # wooden trough
+    rect(s, PALETTE["bark_brown"], (6, 36, 44, 16))
+    rect(s, darken(PALETTE["bark_brown"], 0.82), (6, 36, 44, 3))
+    # russet spout pipe
+    polygon(s, PALETTE["russet"], [(14, 16), (42, 16), (46, 36), (10, 36)])
+    rect(s, PALETTE["bark_brown"], (10, 32, 36, 5))   # spout mouth
+    # mount post
+    rect(s, PALETTE["bark_brown"], (22, 6, 12, 14))
+    painterly_repaint(s, (6, 36, 44, 16), PALETTE["bark_brown"], gx, gy)
+    painterly_repaint(s, (14, 16, 32, 20), PALETTE["russet"], gx, gy)
+    return finish(s)
+
+
+def build_spout_flow(gx, gy):
+    s = new_surf(40, 44)
+    # Brook water pouring from the spout into a small pool
+    ellipse(s, PALETTE["brook"], (14, 2, 12, 26))
+    ellipse(s, PALETTE["brook"], (4, 24, 32, 16))
+    ellipse(s, lighten(PALETTE["brook"], 0.3), (16, 6, 8, 16))
+    painterly_repaint(s, (4, 2, 32, 38), PALETTE["brook"], gx, gy)
+    return finish(s)
 
 
 # --------------------------------------------------------------------------- #
