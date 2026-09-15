@@ -124,6 +124,9 @@ def run_check():
     feedback = checks.feedback_tone_check()
     results["feedback_tone_check"] = feedback
     checks_dict["success_failure_feedback_distinct"] = feedback["ok"]
+    ending = checks.ending_checks()
+    results["ending_checks"] = ending
+    checks_dict["ending_beat_companion_and_title"] = ending["ok"]
 
     results["checks"] = checks_dict
     results["ok"] = all(checks_dict.values())

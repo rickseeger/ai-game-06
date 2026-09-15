@@ -280,6 +280,9 @@ class Game:
             ui.draw_prompt(surface, self._prompt())
 
         ui.draw_room_chip(surface, room.title, room.subtitle)
+        if "ended" in self.state.flags:
+            ui.draw_end_title(surface, "the fireflies came home.",
+                              subtitle="the long dusk is over")
         if self.dialogue is not None:
             ui.draw_dialogue(surface, self.dialogue.speaker, self.dialogue.text,
                              h - 250, tone=self.dialogue.tone)

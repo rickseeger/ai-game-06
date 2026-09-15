@@ -10,7 +10,8 @@ applies the world-reactivity beats declared in docs/ADVENTURE_DESIGN.md section 
   - seed_taken    : the greenhouse seed-bed dims (the live spark is gone)
   - stair_open    : a ribbon of warm light marks the cleared Hill Stair
   - lantern_lit   : the Heart-Lantern floods the crown in warm light
-  - ended         : fireflies pour back over the ridge (a golden river)
+  - ended         : fireflies pour back over the ridge (a golden river) and
+                    Mallow's companion (a firefly-moth) drifts home to the gate
 
 These overlays are pure additions to the scene graph (glows, props, fireflies), so
 the beat changes are deterministic and pixel-samplable (see emberglow/checks.py).
@@ -116,8 +117,14 @@ def apply_beats(world, room: SceneRoom, rid: str, flags: FrozenSet[str]) -> Scen
         room.glows.append(Glow(4.0, 3.0, "hearth_amber", 130, 230))
         room.glows.append(Glow(4.0, 4.0, "honey_gold", 110, 210))
 
-    # --- ended: fireflies pour back in a golden river --------------------------
+    # --- ended: fireflies pour back in a golden river; Mallow's companion home -
     if "ended" in F:
+        # Mallow's long-lost companion (a little firefly-moth) drifts home to the
+        # gatekeeper -- the ending's emotional beat, a distinct warm sprite + glow.
+        if rid == "gate":
+            room.props.append(Prop("companion", 2, 2, interactable=False,
+                                   anim="bob", glow="honey_gold"))
+            room.glows.append(Glow(2.0, 2.0, "honey_gold", 34, 64))
         extra = [(3.2, 7.4), (4.8, 7.2), (5.6, 6.8), (2.6, 6.9), (6.4, 6.6),
                  (3.9, 6.2), (5.1, 6.0), (4.2, 5.4), (6.0, 5.2), (3.5, 5.0),
                  (5.4, 4.6), (4.0, 4.2), (6.2, 3.8), (4.8, 3.4), (3.6, 3.0)]

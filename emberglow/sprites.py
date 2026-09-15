@@ -524,6 +524,7 @@ def get_sprite(kind, gx=0, gy=0):
             "seed_cradle_planted": build_seed_cradle_planted,
             "lens_mount": build_lens_mount, "lens_mount_lit": build_lens_mount_lit,
             "focus_wheel": build_focus_wheel, "ridge": build_ridge,
+            "companion": build_companion,
         }
         _sprite_cache[key] = builders[kind](gx, gy)
     return _sprite_cache[key]
@@ -704,6 +705,30 @@ def build_stair_light(gx, gy):
     painterly_repaint(s, (8, 8, 48, 24), PALETTE["honey_gold"], gx, gy)
     return finish(s)
 
+
+
+def build_companion(gx, gy):
+    """Mallow's long-lost companion: a little migrating firefly-moth.
+
+    The ending's emotional beat -- a warm honey-gold moth with soft firefly-glow
+    wings that drifts home to Mallow on 'ended'. Distinct from the ambient
+    fireflies by its paired-wing silhouette + larger warm body (pixel-samplable
+    honey-gold body, firefly-glow wings).
+    """
+    s = new_surf(36, 30)
+    # paired wings (soft firefly-glow, a distinct moth silhouette)
+    polygon(s, PALETTE["firefly_glow"], [(3, 13), (13, 3), (15, 13)])
+    polygon(s, PALETTE["firefly_glow"], [(21, 13), (33, 3), (23, 13)])
+    polygon(s, mix(PALETTE["firefly_glow"], PALETTE["honey_gold"], 0.4),
+            [(6, 15), (13, 6), (15, 15)])
+    polygon(s, mix(PALETTE["firefly_glow"], PALETTE["honey_gold"], 0.4),
+            [(21, 15), (23, 6), (30, 15)])
+    # warm honey-gold body + head + tail glow
+    ellipse(s, PALETTE["honey_gold"], (13, 7, 10, 21))
+    circle(s, PALETTE["hearth_amber"], 18, 6, 4)
+    circle(s, PALETTE["firefly_glow"], 18, 28, 3)
+    painterly_repaint(s, (13, 7, 10, 21), PALETTE["honey_gold"], gx, gy)
+    return finish(s)
 
 # --------------------------------------------------------------------------- #
 # Firefly Greenhouse props (node 18): glass walls + glass house, plant beds,

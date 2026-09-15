@@ -317,6 +317,67 @@ def world_beat_checks():
     return beats
 
 
+def ending_checks():
+    """Pixel-sampling proof of the full ending beat (companion home + end title).
+
+    'ended' must do two visible things on top of the firefly river: (1) Mallow's
+    long-lost companion -- a warm honey-gold firefly-moth -- appears beside the
+    gatekeeper at the Hollow Gate, and (2) the one-line title "the fireflies came
+    home." renders as a Cream-Parchment panel with a Honey-Gold accent. Both are
+    computed in code, not looked at by eye.
+    """
+    from . import worldreact
+    from .world import World, State
+    from .game import Game
+    from .sprites import get_sprite
+    from .geometry import prop_anchor
+
+    w = World()
+
+    # 1. the companion sprite (honey-gold body) sits by Mallow on 'ended'
+    before, ox, oy = _scene_surface("gate", ["lantern_lit"])
+    after, _, _ = _scene_surface("gate", ["lantern_lit", "ended"])
+    room_after = worldreact.build_scene_room(w, "gate",
+                                             frozenset(["lantern_lit", "ended"]))
+    comp = next(p for p in room_after.props if p.kind == "companion")
+    spr = get_sprite("companion", comp.gx, comp.gy)
+    fx, fy = prop_anchor(comp.gx, comp.gy, comp.h, ox, oy)
+    x0, y0 = fx - spr.get_width() // 2, fy - spr.get_height() + 2
+    hit = total = 0
+    for py in range(max(0, y0), min(after.get_height(), y0 + spr.get_height())):
+        for px in range(max(0, x0), min(after.get_width(), x0 + spr.get_width())):
+            total += 1
+            if _is_gold(after.get_at((px, py))[:3]):
+                hit += 1
+    companion_present = hit > 8
+
+    # 2. the end title panel renders at the top-center of the frame
+    game = Game()
+    game.state = State("gate", game.state.pos,
+                       flags=frozenset({"lantern_lit", "ended"}))
+    surf, _, _ = game.render(1280, 720, 0.0)
+    w_s, h_s = surf.get_size()
+    cream = gold = 0
+    for y in range(96, 162, 2):
+        for x in range(0, w_s, 2):
+            c = surf.get_at((x, y))[:3]
+            if dE(c, PALETTE["cream_parch"]) <= 40:
+                cream += 1
+            if _is_gold(c):
+                gold += 1
+    title_present = cream > 200 and gold > 4
+
+    return {
+        "companion_present": companion_present,
+        "companion_gold_hits": hit,
+        "companion_gold_total": total,
+        "end_title_present": title_present,
+        "end_title_cream_px": cream,
+        "end_title_gold_px": gold,
+        "ok": companion_present and title_present,
+    }
+
+
 def market_feature_presence(surface, room, ox, oy):
     """Confirm the Forge Market's key props are actually drawn (palette hit in box)."""
     from .sprites import get_sprite

@@ -207,7 +207,7 @@
     },
     "ended": {
       "firefly_px_before": 67,
-      "firefly_px_after": 118,
+      "firefly_px_after": 122,
       "changed": true
     },
     "all_beats_distinct": true
@@ -226,6 +226,15 @@
     "marker_success_reads_gold": true,
     "marker_failure_reads_russet": true,
     "frames_differ": true,
+    "ok": true
+  },
+  "ending_checks": {
+    "companion_present": true,
+    "companion_gold_hits": 84,
+    "companion_gold_total": 418,
+    "end_title_present": true,
+    "end_title_cream_px": 5915,
+    "end_title_gold_px": 33,
     "ok": true
   },
   "checks": {
@@ -252,10 +261,11 @@
     "deterministic": true,
     "animation_changes_frame": true,
     "all_world_beats_distinct": true,
-    "success_failure_feedback_distinct": true
+    "success_failure_feedback_distinct": true,
+    "ending_beat_companion_and_title": true
   },
   "ok": true,
-  "unit_tests_run": 120,
+  "unit_tests_run": 144,
   "unit_tests_failed": 0,
   "unit_tests_ok": true
 }

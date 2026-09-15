@@ -1,0 +1,3230 @@
+{
+  "driver": "SDL dummy (headless)",
+  "input_path": "pygame.event.post -> pygame.event.get -> Game.handle_event (the real SDL keyboard event queue; no direct game-state calls)",
+  "move_interval_s": 0.15,
+  "dt_s": 0.15,
+  "trace": [
+    {
+      "label": "spawn",
+      "frame": 0,
+      "room": "gate",
+      "pos": [
+        4,
+        6
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": null,
+      "dialogue": null,
+      "selected": null,
+      "flags": [],
+      "inventory": []
+    },
+    {
+      "label": "out_of_order_ring_bell_early",
+      "frame": 15,
+      "room": "gate",
+      "pos": [
+        6,
+        2
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": "hollow_bell",
+      "dialogue": "",
+      "selected": null,
+      "flags": [],
+      "inventory": []
+    },
+    {
+      "label": "meet_mallow",
+      "frame": 28,
+      "room": "gate",
+      "pos": [
+        2,
+        2
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": "mallow",
+      "dialogue": "Mallow",
+      "selected": "crank_handle",
+      "flags": [
+        "met_mallow"
+      ],
+      "inventory": [
+        "crank_handle"
+      ]
+    },
+    {
+      "label": "request_flask",
+      "frame": 61,
+      "room": "market",
+      "pos": [
+        2,
+        2
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": "bramble",
+      "dialogue": "Bramble",
+      "selected": "crank_handle",
+      "flags": [
+        "flask_received",
+        "met_mallow"
+      ],
+      "inventory": [
+        "crank_handle",
+        "glass_flask"
+      ]
+    },
+    {
+      "label": "out_of_order_fill_before_water",
+      "frame": 94,
+      "room": "mill",
+      "pos": [
+        6,
+        2
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": "water_spout",
+      "dialogue": "",
+      "selected": "glass_flask",
+      "flags": [
+        "flask_received",
+        "met_mallow"
+      ],
+      "inventory": [
+        "crank_handle",
+        "glass_flask"
+      ]
+    },
+    {
+      "label": "turn_wheel",
+      "frame": 113,
+      "room": "mill",
+      "pos": [
+        2,
+        4
+      ],
+      "facing": [
+        0,
+        -1
+      ],
+      "target": "crank_socket",
+      "dialogue": "Mallow",
+      "selected": "glass_flask",
+      "flags": [
+        "flask_received",
+        "met_mallow",
+        "water_flowing"
+      ],
+      "inventory": [
+        "glass_flask"
+      ]
+    },
+    {
+      "label": "fill_flask",
+      "frame": 132,
+      "room": "mill",
+      "pos": [
+        6,
+        2
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": "water_spout",
+      "dialogue": "Bramble",
+      "selected": "full_flask",
+      "flags": [
+        "flask_filled",
+        "flask_received",
+        "met_mallow",
+        "water_flowing"
+      ],
+      "inventory": [
+        "full_flask"
+      ]
+    },
+    {
+      "label": "take_seed",
+      "frame": 155,
+      "room": "greenhouse",
+      "pos": [
+        4,
+        2
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": "ember_seed",
+      "dialogue": "Mallow",
+      "selected": "full_flask",
+      "flags": [
+        "flask_filled",
+        "flask_received",
+        "met_mallow",
+        "seed_taken",
+        "water_flowing"
+      ],
+      "inventory": [
+        "ember_seed",
+        "full_flask"
+      ]
+    },
+    {
+      "label": "cool_lens",
+      "frame": 192,
+      "room": "market",
+      "pos": [
+        2,
+        2
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": "bramble",
+      "dialogue": "Bramble",
+      "selected": "lens",
+      "flags": [
+        "flask_filled",
+        "flask_received",
+        "lens_ready",
+        "met_mallow",
+        "seed_taken",
+        "water_flowing"
+      ],
+      "inventory": [
+        "ember_seed",
+        "lens"
+      ]
+    },
+    {
+      "label": "open_stair",
+      "frame": 221,
+      "room": "gate",
+      "pos": [
+        2,
+        2
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": "mallow",
+      "dialogue": "Mallow",
+      "selected": "lens",
+      "flags": [
+        "flask_filled",
+        "flask_received",
+        "lens_ready",
+        "met_mallow",
+        "seed_taken",
+        "stair_open",
+        "water_flowing"
+      ],
+      "inventory": [
+        "ember_seed",
+        "lens"
+      ]
+    },
+    {
+      "label": "out_of_order_kindle_before_lens_seed",
+      "frame": 244,
+      "room": "crown",
+      "pos": [
+        4,
+        5
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": "focus_wheel",
+      "dialogue": "",
+      "selected": "lens",
+      "flags": [
+        "flask_filled",
+        "flask_received",
+        "lens_ready",
+        "met_mallow",
+        "seed_taken",
+        "stair_open",
+        "water_flowing"
+      ],
+      "inventory": [
+        "ember_seed",
+        "lens"
+      ]
+    },
+    {
+      "label": "mount_lens",
+      "frame": 261,
+      "room": "crown",
+      "pos": [
+        5,
+        2
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": "lens_mount",
+      "dialogue": "Mallow",
+      "selected": "ember_seed",
+      "flags": [
+        "flask_filled",
+        "flask_received",
+        "lens_mounted",
+        "lens_ready",
+        "met_mallow",
+        "seed_taken",
+        "stair_open",
+        "water_flowing"
+      ],
+      "inventory": [
+        "ember_seed"
+      ]
+    },
+    {
+      "label": "plant_seed",
+      "frame": 278,
+      "room": "crown",
+      "pos": [
+        3,
+        4
+      ],
+      "facing": [
+        0,
+        -1
+      ],
+      "target": "seed_cradle",
+      "dialogue": "Mallow",
+      "selected": null,
+      "flags": [
+        "flask_filled",
+        "flask_received",
+        "lens_mounted",
+        "lens_ready",
+        "met_mallow",
+        "seed_planted",
+        "seed_taken",
+        "stair_open",
+        "water_flowing"
+      ],
+      "inventory": []
+    },
+    {
+      "label": "kindle_lantern",
+      "frame": 287,
+      "room": "crown",
+      "pos": [
+        4,
+        5
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": "focus_wheel",
+      "dialogue": "Mallow",
+      "selected": null,
+      "flags": [
+        "flask_filled",
+        "flask_received",
+        "lantern_lit",
+        "lens_mounted",
+        "lens_ready",
+        "met_mallow",
+        "seed_planted",
+        "seed_taken",
+        "stair_open",
+        "water_flowing"
+      ],
+      "inventory": []
+    },
+    {
+      "label": "capture_lantern_lit",
+      "frame": 289,
+      "room": "crown",
+      "pos": [
+        4,
+        5
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": "focus_wheel",
+      "dialogue": null,
+      "selected": null,
+      "flags": [
+        "flask_filled",
+        "flask_received",
+        "lantern_lit",
+        "lens_mounted",
+        "lens_ready",
+        "met_mallow",
+        "seed_planted",
+        "seed_taken",
+        "stair_open",
+        "water_flowing"
+      ],
+      "inventory": []
+    },
+    {
+      "label": "ring_bell",
+      "frame": 308,
+      "room": "gate",
+      "pos": [
+        6,
+        2
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": "hollow_bell",
+      "dialogue": "Mallow",
+      "selected": null,
+      "flags": [
+        "ended",
+        "flask_filled",
+        "flask_received",
+        "lantern_lit",
+        "lens_mounted",
+        "lens_ready",
+        "met_mallow",
+        "seed_planted",
+        "seed_taken",
+        "stair_open",
+        "water_flowing"
+      ],
+      "inventory": []
+    },
+    {
+      "label": "capture_ended",
+      "frame": 310,
+      "room": "gate",
+      "pos": [
+        6,
+        2
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": "hollow_bell",
+      "dialogue": null,
+      "selected": null,
+      "flags": [
+        "ended",
+        "flask_filled",
+        "flask_received",
+        "lantern_lit",
+        "lens_mounted",
+        "lens_ready",
+        "met_mallow",
+        "seed_planted",
+        "seed_taken",
+        "stair_open",
+        "water_flowing"
+      ],
+      "inventory": []
+    }
+  ],
+  "game_event_log": [
+    {
+      "frame": 0,
+      "kind": "spawn",
+      "room": "gate",
+      "pos": [
+        4,
+        6
+      ]
+    },
+    {
+      "frame": 0,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 1,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        4,
+        5
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 3,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        4,
+        4
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 5,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        4,
+        3
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 7,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        4,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 8,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 9,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        5,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 11,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        6,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 12,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 12,
+      "kind": "target",
+      "target": "hollow_bell"
+    },
+    {
+      "frame": 13,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "",
+      "tone": "failure",
+      "lines": 1
+    },
+    {
+      "frame": 13,
+      "kind": "interact",
+      "target": "hollow_bell",
+      "verb": "verb",
+      "result": "locked",
+      "action": null,
+      "detail": "not ready",
+      "flags": [],
+      "grant": [],
+      "consume": []
+    },
+    {
+      "frame": 15,
+      "kind": "dialogue",
+      "open": false
+    },
+    {
+      "frame": 17,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 17,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 18,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        5,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 20,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        4,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 22,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        3,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 24,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        2,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 25,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 25,
+      "kind": "target",
+      "target": "mallow"
+    },
+    {
+      "frame": 26,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Mallow",
+      "tone": "success",
+      "lines": 4
+    },
+    {
+      "frame": 26,
+      "kind": "interact",
+      "target": "mallow",
+      "verb": "verb",
+      "result": "success",
+      "action": "meet_mallow",
+      "detail": "Mallow gives you the crank",
+      "flags": [
+        "met_mallow"
+      ],
+      "grant": [
+        "crank_handle"
+      ],
+      "consume": []
+    },
+    {
+      "frame": 28,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Mallow",
+      "index": 1
+    },
+    {
+      "frame": 30,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Mallow",
+      "index": 2
+    },
+    {
+      "frame": 32,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Mallow",
+      "index": 3
+    },
+    {
+      "frame": 34,
+      "kind": "dialogue",
+      "open": false
+    },
+    {
+      "frame": 36,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 36,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 37,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        3,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 38,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 39,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        3,
+        3
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 41,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        3,
+        4
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 42,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 43,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        4,
+        4
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 45,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        5,
+        4
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 47,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        6,
+        4
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 49,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        7,
+        4
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 51,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        1,
+        4
+      ],
+      "room": "market"
+    },
+    {
+      "frame": 52,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 53,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        1,
+        3
+      ],
+      "room": "market"
+    },
+    {
+      "frame": 55,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        1,
+        2
+      ],
+      "room": "market"
+    },
+    {
+      "frame": 56,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 57,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        2,
+        2
+      ],
+      "room": "market"
+    },
+    {
+      "frame": 58,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 58,
+      "kind": "target",
+      "target": "bramble"
+    },
+    {
+      "frame": 59,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Bramble",
+      "tone": "success",
+      "lines": 3
+    },
+    {
+      "frame": 59,
+      "kind": "interact",
+      "target": "bramble",
+      "verb": "verb",
+      "result": "success",
+      "action": "request_flask",
+      "detail": "Bramble gives you the flask",
+      "flags": [
+        "flask_received"
+      ],
+      "grant": [
+        "glass_flask"
+      ],
+      "consume": []
+    },
+    {
+      "frame": 61,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Bramble",
+      "index": 1
+    },
+    {
+      "frame": 63,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Bramble",
+      "index": 2
+    },
+    {
+      "frame": 65,
+      "kind": "dialogue",
+      "open": false
+    },
+    {
+      "frame": 67,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 67,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 68,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        3,
+        2
+      ],
+      "room": "market"
+    },
+    {
+      "frame": 69,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 70,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        3,
+        1
+      ],
+      "room": "market"
+    },
+    {
+      "frame": 71,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 72,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        4,
+        1
+      ],
+      "room": "market"
+    },
+    {
+      "frame": 73,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 74,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        4,
+        7
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 76,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        4,
+        6
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 78,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        4,
+        5
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 80,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        4,
+        4
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 82,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        4,
+        3
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 84,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        4,
+        2
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 85,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 86,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        5,
+        2
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 88,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        6,
+        2
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 89,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 89,
+      "kind": "target",
+      "target": "water_spout"
+    },
+    {
+      "frame": 90,
+      "kind": "item",
+      "selected": "glass_flask"
+    },
+    {
+      "frame": 92,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "",
+      "tone": "failure",
+      "lines": 1
+    },
+    {
+      "frame": 92,
+      "kind": "interact",
+      "target": "water_spout",
+      "verb": "verb",
+      "result": "locked",
+      "action": null,
+      "detail": "not ready",
+      "flags": [],
+      "grant": [],
+      "consume": []
+    },
+    {
+      "frame": 94,
+      "kind": "dialogue",
+      "open": false
+    },
+    {
+      "frame": 96,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 96,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 97,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        5,
+        2
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 98,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 99,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        5,
+        3
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 101,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        5,
+        4
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 102,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 103,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        4,
+        4
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 105,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        3,
+        4
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 107,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        2,
+        4
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 108,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 108,
+      "kind": "target",
+      "target": "crank_socket"
+    },
+    {
+      "frame": 109,
+      "kind": "item",
+      "selected": "crank_handle"
+    },
+    {
+      "frame": 111,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Mallow",
+      "tone": "success",
+      "lines": 2
+    },
+    {
+      "frame": 111,
+      "kind": "interact",
+      "target": "crank_socket",
+      "verb": "verb",
+      "result": "success",
+      "action": "turn_wheel",
+      "detail": "the wheel turns",
+      "flags": [
+        "water_flowing"
+      ],
+      "grant": [],
+      "consume": [
+        "crank_handle"
+      ]
+    },
+    {
+      "frame": 113,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Mallow",
+      "index": 1
+    },
+    {
+      "frame": 115,
+      "kind": "dialogue",
+      "open": false
+    },
+    {
+      "frame": 117,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 117,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 118,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        3,
+        4
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 119,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 120,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        3,
+        3
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 122,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        3,
+        2
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 123,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 124,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        4,
+        2
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 126,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        5,
+        2
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 128,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        6,
+        2
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 129,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 129,
+      "kind": "target",
+      "target": "water_spout"
+    },
+    {
+      "frame": 130,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Bramble",
+      "tone": "success",
+      "lines": 1
+    },
+    {
+      "frame": 130,
+      "kind": "interact",
+      "target": "water_spout",
+      "verb": "verb",
+      "result": "success",
+      "action": "fill_flask",
+      "detail": "the flask is full",
+      "flags": [
+        "flask_filled"
+      ],
+      "grant": [
+        "full_flask"
+      ],
+      "consume": [
+        "glass_flask"
+      ]
+    },
+    {
+      "frame": 132,
+      "kind": "dialogue",
+      "open": false
+    },
+    {
+      "frame": 134,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 134,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 135,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        7,
+        2
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 136,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 137,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        7,
+        3
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 139,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        7,
+        4
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 140,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 141,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        1,
+        4
+      ],
+      "room": "greenhouse"
+    },
+    {
+      "frame": 142,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 143,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        1,
+        3
+      ],
+      "room": "greenhouse"
+    },
+    {
+      "frame": 144,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 145,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        2,
+        3
+      ],
+      "room": "greenhouse"
+    },
+    {
+      "frame": 147,
+      "kind": "target",
+      "target": "ember_seed"
+    },
+    {
+      "frame": 147,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        3,
+        3
+      ],
+      "room": "greenhouse"
+    },
+    {
+      "frame": 148,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 148,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 149,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        3,
+        2
+      ],
+      "room": "greenhouse"
+    },
+    {
+      "frame": 150,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 151,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        4,
+        2
+      ],
+      "room": "greenhouse"
+    },
+    {
+      "frame": 152,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 152,
+      "kind": "target",
+      "target": "ember_seed"
+    },
+    {
+      "frame": 153,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Mallow",
+      "tone": "success",
+      "lines": 1
+    },
+    {
+      "frame": 153,
+      "kind": "interact",
+      "target": "ember_seed",
+      "verb": "verb",
+      "result": "success",
+      "action": "take_seed",
+      "detail": "you take the ember-seed",
+      "flags": [
+        "seed_taken"
+      ],
+      "grant": [
+        "ember_seed"
+      ],
+      "consume": []
+    },
+    {
+      "frame": 155,
+      "kind": "dialogue",
+      "open": false
+    },
+    {
+      "frame": 157,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 157,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 158,
+      "kind": "target",
+      "target": "mural"
+    },
+    {
+      "frame": 158,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        3,
+        2
+      ],
+      "room": "greenhouse"
+    },
+    {
+      "frame": 159,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 159,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 160,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        3,
+        3
+      ],
+      "room": "greenhouse"
+    },
+    {
+      "frame": 162,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        3,
+        4
+      ],
+      "room": "greenhouse"
+    },
+    {
+      "frame": 163,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 164,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        2,
+        4
+      ],
+      "room": "greenhouse"
+    },
+    {
+      "frame": 166,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        1,
+        4
+      ],
+      "room": "greenhouse"
+    },
+    {
+      "frame": 168,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        7,
+        4
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 169,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 170,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        7,
+        5
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 171,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 172,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        6,
+        5
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 174,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        5,
+        5
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 175,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 176,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        5,
+        6
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 178,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        5,
+        7
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 179,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 180,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        4,
+        7
+      ],
+      "room": "mill"
+    },
+    {
+      "frame": 181,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 182,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        4,
+        1
+      ],
+      "room": "market"
+    },
+    {
+      "frame": 184,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        4,
+        2
+      ],
+      "room": "market"
+    },
+    {
+      "frame": 185,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 186,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        3,
+        2
+      ],
+      "room": "market"
+    },
+    {
+      "frame": 188,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        2,
+        2
+      ],
+      "room": "market"
+    },
+    {
+      "frame": 189,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 189,
+      "kind": "target",
+      "target": "bramble"
+    },
+    {
+      "frame": 190,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Bramble",
+      "tone": "success",
+      "lines": 2
+    },
+    {
+      "frame": 190,
+      "kind": "interact",
+      "target": "bramble",
+      "verb": "verb",
+      "result": "success",
+      "action": "cool_lens",
+      "detail": "you get the dew-cooled lens",
+      "flags": [
+        "lens_ready"
+      ],
+      "grant": [
+        "lens"
+      ],
+      "consume": [
+        "full_flask"
+      ]
+    },
+    {
+      "frame": 192,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Bramble",
+      "index": 1
+    },
+    {
+      "frame": 194,
+      "kind": "dialogue",
+      "open": false
+    },
+    {
+      "frame": 196,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 196,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 197,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        1,
+        2
+      ],
+      "room": "market"
+    },
+    {
+      "frame": 198,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 199,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        1,
+        3
+      ],
+      "room": "market"
+    },
+    {
+      "frame": 201,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        1,
+        4
+      ],
+      "room": "market"
+    },
+    {
+      "frame": 202,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 203,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        7,
+        4
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 205,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        6,
+        4
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 207,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        5,
+        4
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 208,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 209,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        5,
+        3
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 211,
+      "kind": "target",
+      "target": "hill_stair"
+    },
+    {
+      "frame": 211,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        5,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 212,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 212,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 213,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        4,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 215,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        3,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 217,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        2,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 218,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 218,
+      "kind": "target",
+      "target": "mallow"
+    },
+    {
+      "frame": 219,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Mallow",
+      "tone": "success",
+      "lines": 2
+    },
+    {
+      "frame": 219,
+      "kind": "interact",
+      "target": "mallow",
+      "verb": "verb",
+      "result": "success",
+      "action": "open_stair",
+      "detail": "the stair is open",
+      "flags": [
+        "stair_open"
+      ],
+      "grant": [],
+      "consume": []
+    },
+    {
+      "frame": 221,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Mallow",
+      "index": 1
+    },
+    {
+      "frame": 223,
+      "kind": "dialogue",
+      "open": false
+    },
+    {
+      "frame": 225,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 225,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 226,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        3,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 227,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 228,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        3,
+        1
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 229,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 230,
+      "kind": "target",
+      "target": "hill_stair"
+    },
+    {
+      "frame": 230,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        4,
+        1
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 231,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 231,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 232,
+      "kind": "target",
+      "target": "focus_wheel"
+    },
+    {
+      "frame": 232,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        4,
+        7
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 233,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 233,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 234,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        5,
+        7
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 235,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 236,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        5,
+        6
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 238,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        5,
+        5
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 239,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 240,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        4,
+        5
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 241,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 241,
+      "kind": "target",
+      "target": "focus_wheel"
+    },
+    {
+      "frame": 242,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "",
+      "tone": "failure",
+      "lines": 1
+    },
+    {
+      "frame": 242,
+      "kind": "interact",
+      "target": "focus_wheel",
+      "verb": "verb",
+      "result": "failure",
+      "action": null,
+      "detail": "nothing to use it on",
+      "flags": [],
+      "grant": [],
+      "consume": []
+    },
+    {
+      "frame": 244,
+      "kind": "dialogue",
+      "open": false
+    },
+    {
+      "frame": 246,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 246,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 247,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        4,
+        4
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 248,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 249,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        5,
+        4
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 251,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        6,
+        4
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 252,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 253,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        6,
+        3
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 255,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        6,
+        2
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 256,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 257,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        5,
+        2
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 258,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 258,
+      "kind": "target",
+      "target": "lens_mount"
+    },
+    {
+      "frame": 259,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Mallow",
+      "tone": "success",
+      "lines": 1
+    },
+    {
+      "frame": 259,
+      "kind": "interact",
+      "target": "lens_mount",
+      "verb": "verb",
+      "result": "success",
+      "action": "mount_lens",
+      "detail": "the lens is mounted",
+      "flags": [
+        "lens_mounted"
+      ],
+      "grant": [],
+      "consume": [
+        "lens"
+      ]
+    },
+    {
+      "frame": 261,
+      "kind": "dialogue",
+      "open": false
+    },
+    {
+      "frame": 263,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 263,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 264,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        6,
+        2
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 265,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 266,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        6,
+        3
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 268,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        6,
+        4
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 269,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 270,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        5,
+        4
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 272,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        4,
+        4
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 274,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        3,
+        4
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 275,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 275,
+      "kind": "target",
+      "target": "seed_cradle"
+    },
+    {
+      "frame": 276,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Mallow",
+      "tone": "success",
+      "lines": 1
+    },
+    {
+      "frame": 276,
+      "kind": "interact",
+      "target": "seed_cradle",
+      "verb": "verb",
+      "result": "success",
+      "action": "plant_seed",
+      "detail": "the seed is planted",
+      "flags": [
+        "seed_planted"
+      ],
+      "grant": [],
+      "consume": [
+        "ember_seed"
+      ]
+    },
+    {
+      "frame": 278,
+      "kind": "dialogue",
+      "open": false
+    },
+    {
+      "frame": 280,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 280,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 281,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        3,
+        5
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 282,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 283,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        4,
+        5
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 284,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 284,
+      "kind": "target",
+      "target": "focus_wheel"
+    },
+    {
+      "frame": 285,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Mallow",
+      "tone": "success",
+      "lines": 1
+    },
+    {
+      "frame": 285,
+      "kind": "interact",
+      "target": "focus_wheel",
+      "verb": "verb",
+      "result": "success",
+      "action": "kindle_lantern",
+      "detail": "the lantern is lit",
+      "flags": [
+        "lantern_lit"
+      ],
+      "grant": [],
+      "consume": []
+    },
+    {
+      "frame": 287,
+      "kind": "dialogue",
+      "open": false
+    },
+    {
+      "frame": 289,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 289,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 290,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        5,
+        5
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 291,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 292,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        5,
+        6
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 294,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        5,
+        7
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 295,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 296,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        4,
+        7
+      ],
+      "room": "crown"
+    },
+    {
+      "frame": 297,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 298,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        4,
+        1
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 300,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        4,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 301,
+      "kind": "facing",
+      "dir": [
+        1,
+        0
+      ]
+    },
+    {
+      "frame": 302,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        5,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 304,
+      "kind": "move",
+      "dir": [
+        1,
+        0
+      ],
+      "pos": [
+        6,
+        2
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 305,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 305,
+      "kind": "target",
+      "target": "hollow_bell"
+    },
+    {
+      "frame": 306,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Mallow",
+      "tone": "success",
+      "lines": 1
+    },
+    {
+      "frame": 306,
+      "kind": "interact",
+      "target": "hollow_bell",
+      "verb": "verb",
+      "result": "success",
+      "action": "ring_bell",
+      "detail": "the bell rings",
+      "flags": [
+        "ended"
+      ],
+      "grant": [],
+      "consume": []
+    },
+    {
+      "frame": 308,
+      "kind": "dialogue",
+      "open": false
+    }
+  ],
+  "assertions": {
+    "out_of_order_ring_bell_locked": true,
+    "meet_mallow_sets_met_mallow": true,
+    "meet_mallow_grants_crank_handle": true,
+    "meet_mallow_fires_exactly_once": true,
+    "request_flask_sets_flask_received": true,
+    "request_flask_grants_glass_flask": true,
+    "request_flask_fires_exactly_once": true,
+    "out_of_order_fill_locked": true,
+    "turn_wheel_sets_water_flowing": true,
+    "turn_wheel_consumes_crank_handle": true,
+    "turn_wheel_fires_exactly_once": true,
+    "fill_flask_sets_flask_filled": true,
+    "fill_flask_grants_full_flask": true,
+    "fill_flask_consumes_glass_flask": true,
+    "fill_flask_fires_exactly_once": true,
+    "take_seed_sets_seed_taken": true,
+    "take_seed_grants_ember_seed": true,
+    "take_seed_fires_exactly_once": true,
+    "cool_lens_sets_lens_ready": true,
+    "cool_lens_grants_lens": true,
+    "cool_lens_consumes_full_flask": true,
+    "cool_lens_fires_exactly_once": true,
+    "open_stair_sets_stair_open": true,
+    "open_stair_fires_exactly_once": true,
+    "out_of_order_kindle_locked": true,
+    "mount_lens_sets_lens_mounted": true,
+    "mount_lens_consumes_lens": true,
+    "mount_lens_fires_exactly_once": true,
+    "plant_seed_sets_seed_planted": true,
+    "plant_seed_consumes_ember_seed": true,
+    "plant_seed_fires_exactly_once": true,
+    "kindle_lantern_sets_lantern_lit": true,
+    "kindle_lantern_fires_exactly_once": true,
+    "ring_bell_sets_ended": true,
+    "ring_bell_fires_exactly_once": true,
+    "full_playthrough_reached_ended": true,
+    "inventory_empty_at_end": true,
+    "each_action_flag_set_exactly_once": true
+  },
+  "final_state": {
+    "frame": 310,
+    "room": "gate",
+    "pos": [
+      6,
+      2
+    ],
+    "facing": [
+      0,
+      1
+    ],
+    "target": "hollow_bell",
+    "dialogue": null,
+    "selected": null,
+    "flags": [
+      "ended",
+      "flask_filled",
+      "flask_received",
+      "lantern_lit",
+      "lens_mounted",
+      "lens_ready",
+      "met_mallow",
+      "seed_planted",
+      "seed_taken",
+      "stair_open",
+      "water_flowing"
+    ],
+    "inventory": []
+  },
+  "final_flag_count": 11,
+  "action_count": 11,
+  "world_beat_checks": {
+    "water_flowing": true,
+    "lens_ready": true,
+    "seed_taken": true,
+    "stair_open": true,
+    "lantern_lit": true,
+    "ended": true
+  },
+  "all_beats_distinct": true,
+  "feedback_tone_check_ok": true,
+  "ending_checks": {
+    "companion_present": true,
+    "companion_gold_hits": 84,
+    "companion_gold_total": 418,
+    "end_title_present": true,
+    "end_title_cream_px": 5915,
+    "end_title_gold_px": 33,
+    "ok": true
+  },
+  "frames": [
+    "evidence/lantern_lit.png",
+    "evidence/ended.png"
+  ],
+  "all_checks_pass": true
+}

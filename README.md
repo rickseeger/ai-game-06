@@ -149,6 +149,8 @@ dismisses dialogue, Q quits.
     python3 tools/demo_input.py               # node 4: actual-input runtime trace + frame dumps
     python3 tools/demo_traversal.py           # node 3: traversal demo (exits 0)
     python3 tools/demo_adventure.py           # node 5: full 11-action playthrough + beats/feedback
+    python3 -m unittest tests.test_progression  # node 15: chain / out-of-order / softlock proof
+    python3 tools/demo_progression.py         # node 15: headless playthrough + lantern_lit/ended captures
 
 `--check` renders the 1280x720 scene headlessly (SDL dummy driver) and asserts:
 fixed 2:1 projection, diamond 2:1 bounds, painter's-algorithm draw order (tiles
@@ -215,4 +217,18 @@ and dense ambient fireflies) built to node 2's palette + visual language and
 wired into the live game, including the seed_taken beat (the seed dims and a
 cool pool settles over the bed). See docs/NODE18_SCENE.md; verify with
 `python3 -m emberglow.main --greenhouse-check`.
+
+Node 15 (full quest progression + world reactivity) is complete and
+self-verifying: the 11-action flag/item chain (meet_mallow -> request_flask ->
+turn_wheel -> fill_flask -> take_seed -> cool_lens -> open_stair -> mount_lens ->
+plant_seed -> kindle_lantern -> ring_bell), the room gates (water_flowing,
+stair_open), the four big world-change beats (water flows, lens cooled, seed
+taken, lantern lit), and the full ending sequence are wired end-to-end. The
+ending now returns Mallow's long-lost companion (a little firefly-moth that
+drifts home to the gatekeeper) and renders the one-line title "the fireflies
+came home." on top of the firefly river. See docs/WALKTHROUGH.md for the
+explicit step-by-step route. Verify with
+`python3 -m unittest tests.test_progression` (chain / out-of-order / softlock
+proof) and `python3 tools/demo_progression.py` (recorded headless playthrough +
+fresh lantern_lit and ended captures).
 

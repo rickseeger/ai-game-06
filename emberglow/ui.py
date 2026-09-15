@@ -123,6 +123,29 @@ def draw_hint(surface, text):
     surface.blit(font.render(text, True, PALETTE["bark_brown"]), (x + 14, 32))
 
 
+def draw_end_title(surface, title, subtitle=None):
+    """The one-line end title over the glowing scene (the 'ended' beat).
+
+    A centered Cream-Parchment panel with a Honey-Gold accent bar and Bark-Brown
+    title text, so the ending's homecoming note is legible and pixel-samplable
+    (warm cream panel + gold accent at the top-center of the frame).
+    """
+    font_t = _font(46)
+    w = font_t.size(title)[0] + 72
+    h = 66
+    x = (surface.get_width() - w) // 2
+    y = 96
+    _blit_panel(surface, x, y, w, h, PALETTE["cream_parch"], 246)
+    pygame.draw.rect(surface, PALETTE["honey_gold"], (x + 20, y + 20, 12, 12),
+                     border_radius=3)
+    surface.blit(font_t.render(title, True, PALETTE["bark_brown"]), (x + 44, y + 16))
+    if subtitle:
+        font_s = _font(22)
+        surface.blit(font_s.render(subtitle, True,
+                                   mix(PALETTE["bark_brown"], PALETTE["twilight_violet"], 0.35)),
+                     (x + 44, y + 46))
+
+
 def draw_ui(surface, room, items, selected, speaker, text):
     draw_room_chip(surface, room.title, room.subtitle)
     draw_hint(surface, "walk to a person or object to interact")
