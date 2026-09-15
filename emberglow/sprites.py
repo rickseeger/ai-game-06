@@ -383,6 +383,17 @@ def build_item_icon(item_id):
     return finish_icon(s)
 
 
+def build_marker(gx, gy):
+    """Generic interactable marker (placeholder art for not-yet-art-complete rooms)."""
+    s = new_surf(40, 52)
+    # a glowing orb on a stone plinth, so any interactable object reads at a glance
+    rect(s, PALETTE["bark_brown"], (14, 28, 12, 20))
+    ellipse(s, PALETTE["firefly_glow"], (13, 6, 14, 20))
+    circle(s, PALETTE["honey_gold"], 20, 14, 5)
+    painterly_repaint(s, (14, 28, 12,20), PALETTE["bark_brown"], gx, gy)
+    return finish(s)
+
+
 # --------------------------------------------------------------------------- #
 # Dispatch (cached by kind + world position so brush stays continuous)
 # --------------------------------------------------------------------------- #
@@ -398,6 +409,7 @@ def get_sprite(kind, gx=0, gy=0):
             "rock": build_rock, "grass_tuft": build_grass_tuft,
             "flower": build_flower, "fence": build_fence,
             "mallow": build_mallow, "player": build_player,
+            "marker": build_marker,
         }
         _sprite_cache[key] = builders[kind](gx, gy)
     return _sprite_cache[key]

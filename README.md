@@ -56,6 +56,37 @@ present (which is what prevents progression bypasses). The fixed 2:1 isometric
 mapping of these grid steps onto the on-screen diagonals is rendering's concern;
 this layer is agnostic to it.
 
+## Node 4 deliverable: real input + interaction + target feedback
+
+The game now responds to its documented controls through the real input path.
+Movement is held-key driven and mapped onto the 9x9-grid traversal from node 3;
+interaction is context-sensitive (the object you face is the target); the screen
+always shows the controls and a readable target readout.
+
+- `emberglow/inputmap.py` -- deterministic keyboard -> action mapping (the single
+  source of truth for bindings): WASD + arrows move, E / Space / Return interact,
+  Escape dismisses dialogue/interface, Q quits. Pure, headless-testable.
+- `emberglow/game.py` -- the live session controller: held directional keys drive
+  discrete grid movement (release stops, no stuck movement); facing follows the
+  most recent press; the target is the object in the faced cell (unambiguous);
+  interact performs that target's 11-action-chain step or opens a short dialogue;
+  escape dismisses. Renders the player at its true world position plus a controls
+  hint, a target marker + name label, and an "E: <verb> <name>" prompt.
+- `tests/test_input.py` -- 17 tests: every binding maps to its action; press/release
+  semantics; no stuck movement; blocked-move turns facing without moving; target
+  selection is unambiguous; interaction performs through the input path; dialogue
+  opens and dismisses; movement never triggers an unintended action.
+- `tools/demo_input.py` -- an actual-input runtime trace: posts real SDL keyboard
+  events through the application event queue (pygame.event.post -> get ->
+  Game.handle_event -- the same path a real keyboard feeds) and asserts movement,
+  stopping, target selection, interaction, and dialogue dismissal. Emits
+  evidence/input_trace.json and frame dumps (input_target_frame.png, etc.).
+
+Controls: WASD / arrows to walk (hold to move), E / Space / Enter to interact,
+Escape to dismiss, Q to quit. The on-screen hint and target readout are always
+visible; the firefly-glow marker + name label highlight the object you would
+interact with.
+
 ## Install (one command)
 
     pip install -r requirements.txt
@@ -64,17 +95,19 @@ this layer is agnostic to it.
 
 ## Run
 
-    python3 -m emberglow.main                 # live window (Rick playtest)
+    python3 -m emberglow.main                 # live game (real input: WASD/arrows)
+    python3 -m emberglow.main --input-check   # input-mapping + press/release tests
     python3 -m emberglow.main --headless      # one frame -> evidence/scene_gate.png
     python3 -m emberglow.main --capture 6     # animation frames -> evidence/
     python3 -m emberglow.main --check         # render + full automated verification
 
 ## Verify (automated, no vision)
 
-    python3 -m unittest discover tests        # projection / palette / occlusion units
+    python3 -m unittest discover tests        # projection / palette / occlusion / input units
     python3 -m emberglow.main --check         # pixel sampling + geometry + draw order
-    python3 tools/demo_traversal.py            # node 3: traversal demo (exits 0)
-    python3 -m unittest tests.test_world -v    # node 3: world geometry/traversal tests
+    python3 -m emberglow.main --input-check   # node 4: key mapping + press/release
+    python3 tools/demo_input.py               # node 4: actual-input runtime trace + frame dumps
+    python3 tools/demo_traversal.py           # node 3: traversal demo (exits 0)
 
 `--check` renders the 1280x720 scene headlessly (SDL dummy driver) and asserts:
 fixed 2:1 projection, diamond 2:1 bounds, painter's-algorithm draw order (tiles
@@ -86,6 +119,14 @@ character/prop presence (player, Mallow, bell, cottage, stair), interface presen
 and frame determinism + animation actually changing the frame. Results land in
 evidence/check_results.json; captured frames in evidence/.
 
+`tools/demo_input.py` posts real SDL key events through the event queue and drives
+the controller's tick loop, asserting movement, stopping (no stuck movement),
+target selection, interaction (meet_mallow grants the crank through the input
+path), dialogue dismissal, no unintended actions, and no ambiguous targeting --
+plus code-level frame checks that the controls hint, target glow, name label, and
+player are actually rendered. Frame dumps land in evidence/input_*.png; the trace
+in evidence/input_trace.json.
+
 ## Status
 
 Node 2 (visual foundation + representative scene) is complete and self-verifying.
@@ -94,6 +135,14 @@ See docs/NODE2_SCENE.md for the scene's composition and the unverified visual no
 Node 3 (rendering-independent world geometry + traversal) is complete and
 self-verifying: 177 walkable cells across 5 rooms, all progression-critical
 locations reachable, gated rooms (greenhouse, crown) locked until their flags,
-and a full 11-action on-foot walkthrough passing headless. Traversal owns the
-walkable space and room graph; art, rendering, input handling, quest logic, and
-audio remain separate later nodes. Final human aesthetic judgment is Rick's.
+and a full 11-action on-foot walkthrough passing headless.
+
+Node 4 (real input + context-sensitive interaction + target feedback) is complete
+and self-verifying: 17 input tests + an actual-input runtime trace pass headless,
+movement maps onto the grid traversal, and the on-screen controls + target readout
+render (verified by code-level pixel checks, not vision). The live `--play` loop
+uses this controller; a real keyboard on Rick's Pop!_OS is the final human
+confirmation of feel. Per-room art (market/mill/greenhouse/crown) and the full
+progression/world-reactivity wiring remain later nodes. Final aesthetic judgment
+is Rick's.
+

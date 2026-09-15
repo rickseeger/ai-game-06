@@ -114,3 +114,54 @@ def draw_ui(surface, room, items, selected, speaker, text):
     draw_hint(surface, "walk to a person or object to interact")
     draw_inventory(surface, items, selected, surface.get_height() - 100)
     draw_dialogue(surface, speaker, text, surface.get_height() - 250)
+
+
+# --------------------------------------------------------------------------- #
+# Node 4: controls hint + target feedback
+# --------------------------------------------------------------------------- #
+def tile_top_center(gx, gy, ox, oy):
+    """Screen-space top-center of a grid tile (where a marker/label anchors)."""
+    from .geometry import iso, HW, HH
+    tx, ty = iso(gx, gy, ox, oy)
+    return tx + HW, ty + HH
+
+
+def draw_label_chip(surface, cx, cy, text, accent=False):
+    """A small in-palette name chip above a target (readable, soft-edged)."""
+    font = _font(18)
+    tw = font.size(text)[0]
+    w = tw + 24
+    x = int(cx - w / 2)
+    y = cy - 34
+    _blit_panel(surface, x, y, w, 24, PALETTE["cream_parch"], 244, radius=8)
+    color = PALETTE["russet"] if accent else PALETTE["bark_brown"]
+    surface.blit(font.render(text, True, color), (x + 12, y + 5))
+
+
+def draw_target_marker(surface, cx, cy, has_target):
+    """Readable target feedback on the cell the player currently faces."""
+    from .sprites import radial_glow
+    if has_target:
+        glow = radial_glow(26, PALETTE["firefly_glow"], 150)
+        surface.blit(glow, (int(cx - 26), int(cy - 26)),
+                     special_flags=pygame.BLEND_RGB_ADD)
+    else:
+        # faint cool facing dot on an empty cell (never black)
+        pygame.draw.circle(surface, PALETTE["twilight_violet"],
+                           (int(cx), int(cy)), 3)
+
+
+def draw_controls_hint(surface):
+    """Top-right, always-visible controls line (from inputmap.CONTROLS_HINT)."""
+    from . import inputmap
+    draw_hint(surface, inputmap.CONTROLS_HINT)
+
+
+def draw_prompt(surface, text):
+    """Centered one-line interaction prompt (what E will do right now)."""
+    font = _font(20)
+    w = font.size(text)[0] + 32
+    x = (surface.get_width() - w) // 2
+    y = surface.get_height() - 134
+    _blit_panel(surface, x, y, w, 30, PALETTE["cream_parch"], 236, radius=8)
+    surface.blit(font.render(text, True, PALETTE["bark_brown"]), (x + 16, y + 6))

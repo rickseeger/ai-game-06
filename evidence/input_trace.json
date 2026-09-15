@@ -1,0 +1,335 @@
+{
+  "driver": "SDL dummy (headless)",
+  "input_path": "pygame.event.post -> pygame.event.get -> Game.handle_event (the real SDL keyboard event queue; no direct game-state calls)",
+  "move_interval_s": 0.15,
+  "dt_s": 0.15,
+  "trace": [
+    {
+      "label": "spawn",
+      "frame": 0,
+      "room": "gate",
+      "pos": [
+        4,
+        6
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": null,
+      "dialogue": null,
+      "flags": [],
+      "inventory": []
+    },
+    {
+      "label": "after_west_one_step",
+      "frame": 2,
+      "room": "gate",
+      "pos": [
+        3,
+        6
+      ],
+      "facing": [
+        -1,
+        0
+      ],
+      "target": null,
+      "dialogue": null,
+      "flags": [],
+      "inventory": []
+    },
+    {
+      "label": "after_release_settle",
+      "frame": 6,
+      "room": "gate",
+      "pos": [
+        3,
+        6
+      ],
+      "facing": [
+        -1,
+        0
+      ],
+      "target": null,
+      "dialogue": null,
+      "flags": [],
+      "inventory": []
+    },
+    {
+      "label": "after_north_three_steps",
+      "frame": 10,
+      "room": "gate",
+      "pos": [
+        3,
+        3
+      ],
+      "facing": [
+        0,
+        -1
+      ],
+      "target": null,
+      "dialogue": null,
+      "flags": [],
+      "inventory": []
+    },
+    {
+      "label": "facing_mallow",
+      "frame": 12,
+      "room": "gate",
+      "pos": [
+        3,
+        3
+      ],
+      "facing": [
+        -1,
+        0
+      ],
+      "target": "mallow",
+      "dialogue": null,
+      "flags": [],
+      "inventory": []
+    },
+    {
+      "label": "after_interact",
+      "frame": 14,
+      "room": "gate",
+      "pos": [
+        3,
+        3
+      ],
+      "facing": [
+        -1,
+        0
+      ],
+      "target": "mallow",
+      "dialogue": "Mallow",
+      "flags": [
+        "met_mallow"
+      ],
+      "inventory": [
+        "crank_handle"
+      ]
+    },
+    {
+      "label": "after_dismiss",
+      "frame": 16,
+      "room": "gate",
+      "pos": [
+        3,
+        3
+      ],
+      "facing": [
+        -1,
+        0
+      ],
+      "target": "mallow",
+      "dialogue": null,
+      "flags": [
+        "met_mallow"
+      ],
+      "inventory": [
+        "crank_handle"
+      ]
+    },
+    {
+      "label": "after_south_step",
+      "frame": 18,
+      "room": "gate",
+      "pos": [
+        3,
+        4
+      ],
+      "facing": [
+        0,
+        1
+      ],
+      "target": null,
+      "dialogue": null,
+      "flags": [
+        "met_mallow"
+      ],
+      "inventory": [
+        "crank_handle"
+      ]
+    }
+  ],
+  "game_event_log": [
+    {
+      "frame": 0,
+      "kind": "spawn",
+      "room": "gate",
+      "pos": [
+        4,
+        6
+      ]
+    },
+    {
+      "frame": 0,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 1,
+      "kind": "move",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        3,
+        6
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 6,
+      "kind": "facing",
+      "dir": [
+        0,
+        -1
+      ]
+    },
+    {
+      "frame": 7,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        3,
+        5
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 8,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        3,
+        4
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 9,
+      "kind": "move",
+      "dir": [
+        0,
+        -1
+      ],
+      "pos": [
+        3,
+        3
+      ],
+      "room": "gate"
+    },
+    {
+      "frame": 10,
+      "kind": "facing",
+      "dir": [
+        -1,
+        0
+      ]
+    },
+    {
+      "frame": 10,
+      "kind": "target",
+      "target": "mallow"
+    },
+    {
+      "frame": 11,
+      "kind": "blocked",
+      "dir": [
+        -1,
+        0
+      ],
+      "pos": [
+        3,
+        3
+      ]
+    },
+    {
+      "frame": 12,
+      "kind": "dialogue",
+      "open": true,
+      "speaker": "Mallow"
+    },
+    {
+      "frame": 12,
+      "kind": "interact",
+      "target": "mallow",
+      "result": "performed",
+      "action": "meet_mallow",
+      "flags": [
+        "met_mallow"
+      ],
+      "grant": [
+        "crank_handle"
+      ],
+      "consume": []
+    },
+    {
+      "frame": 14,
+      "kind": "dialogue",
+      "open": false
+    },
+    {
+      "frame": 16,
+      "kind": "facing",
+      "dir": [
+        0,
+        1
+      ]
+    },
+    {
+      "frame": 16,
+      "kind": "target",
+      "target": null
+    },
+    {
+      "frame": 17,
+      "kind": "move",
+      "dir": [
+        0,
+        1
+      ],
+      "pos": [
+        3,
+        4
+      ],
+      "room": "gate"
+    }
+  ],
+  "checks": {
+    "stopping_no_stuck": true,
+    "target_selection": true,
+    "blocked_move_no_displacement": true,
+    "target_frame": {
+      "not_blank": true,
+      "controls_hint_text_present": true,
+      "player_gold_present": true,
+      "target_glow_present": true,
+      "target_label_text_present": true
+    },
+    "interaction_performed": true,
+    "dialogue_dismissed": true,
+    "no_unintended_actions": true,
+    "no_ambiguous_targeting": true,
+    "controls_frame": {
+      "not_blank": true,
+      "controls_hint_text_present": true,
+      "player_gold_present": true,
+      "target_glow_present": null,
+      "target_label_text_present": null
+    }
+  },
+  "all_checks_pass": true
+}

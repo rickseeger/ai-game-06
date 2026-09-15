@@ -2,7 +2,8 @@
 """Emberglow Hollow -- node 2 representative scene (fixed-isometric foundation).
 
 Usage:
-  python3 -m emberglow.main                 # live window (Rick playtest)
+  python3 -m emberglow.main                 # live game (real input: WASD/arrows)
+  python3 -m emberglow.main --input-check   # input-mapping + press/release tests
   python3 -m emberglow.main --headless      # one frame -> evidence/scene_gate.png
   python3 -m emberglow.main --capture 6     # animation frames -> evidence/
   python3 -m emberglow.main --check         # render + full automated verification
@@ -13,7 +14,7 @@ import json
 import os
 import sys
 
-if any(f in sys.argv for f in ("--headless", "--capture", "--check")):
+if any(f in sys.argv for f in ("--headless", "--capture", "--check", "--input-check")):
     os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
     os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
@@ -166,11 +167,44 @@ def run_capture(n):
     return 0
 
 
+def run_play(w, h):
+    """Live interactive game: real keyboard -> Game controller (the node-4 input path)."""
+    from .game import Game
+    game = Game()
+    screen = pygame.display.set_mode((w, h))
+    pygame.display.set_caption("Emberglow Hollow -- the Long Dusk")
+    clock = pygame.time.Clock()
+    t = 0.0
+    while not game.quit:
+        for e in pygame.event.get():
+            game.handle_event(e)
+        dt = clock.tick(60) / 1000.0
+        t += dt
+        game.tick(dt)
+        surface, _, _ = game.render(w, h, t)
+        screen.blit(surface, (0, 0))
+        pygame.display.flip()
+    pygame.quit()
+    return 0
+
+
+def run_input_check():
+    """Run the input-mapping + press/release unit tests (headless)."""
+    import unittest
+    loader = unittest.TestLoader()
+    suite = loader.discover("tests", pattern="test_input.py")
+    runner = unittest.TextTestRunner(verbosity=2, stream=sys.stdout)
+    ut = runner.run(suite)
+    return 0 if ut.wasSuccessful() else 1
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--headless", action="store_true")
     ap.add_argument("--capture", type=int, default=0, metavar="N")
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--input-check", action="store_true")
+    ap.add_argument("--play", action="store_true")
     ap.add_argument("--size", default=f"{W}x{H}")
     ap.add_argument("--out", default="evidence/scene_gate.png")
     args = ap.parse_args()
@@ -180,6 +214,11 @@ def main():
 
     if args.check:
         code = run_check()
+        pygame.quit()
+        return code
+
+    if args.input_check:
+        code = run_input_check()
         pygame.quit()
         return code
 
@@ -197,22 +236,7 @@ def main():
         pygame.quit()
         return 0
 
-    screen = pygame.display.set_mode((w, h))
-    pygame.display.set_caption("Emberglow Hollow -- Hollow Gate (node 2 scene)")
-    clock = pygame.time.Clock()
-    t = 0.0
-    running = True
-    while running:
-        for e in pygame.event.get():
-            if e.type == pygame.QUIT or (e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE):
-                running = False
-        dt = clock.tick(60) / 1000.0
-        t += dt
-        surface, _, _ = render_frame(room, t, w, h)
-        screen.blit(surface, (0, 0))
-        pygame.display.flip()
-    pygame.quit()
-    return 0
+    return run_play(w, h)
 
 
 if __name__ == "__main__":
