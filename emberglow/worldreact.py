@@ -20,7 +20,8 @@ from __future__ import annotations
 
 from typing import Dict, FrozenSet
 
-from .scene import Room as SceneRoom, Prop, Glow, build_room_gate, build_room_market, build_room_mill
+from .scene import (Room as SceneRoom, Prop, Glow, build_room_gate,
+                   build_room_market, build_room_mill, build_room_greenhouse)
 
 # Object id -> prop kind for the generic (marker/rock) rooms, so the important
 # objects read distinctly even before their dedicated art lands in node 6.
@@ -104,6 +105,8 @@ def build_scene_room(world, rid: str, flags: FrozenSet[str]) -> SceneRoom:
         room = build_room_market()
     elif rid == "mill":
         room = build_room_mill()
+    elif rid == "greenhouse":
+        room = build_room_greenhouse()
     else:
         room = generic_scene(world, rid)
     # baseline ambient glows + fireflies for the non-gate rooms

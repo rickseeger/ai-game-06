@@ -1,0 +1,157 @@
+{
+  "size": [
+    1280,
+    720
+  ],
+  "features": {
+    "glass_house@4,1:bark_brown": {
+      "hits": 1288,
+      "total": 2350,
+      "frac": 0.548,
+      "present": true
+    },
+    "glass_wall@3,1:bark_brown": {
+      "hits": 331,
+      "total": 780,
+      "frac": 0.424,
+      "present": true
+    },
+    "plant_bed@2,1:moss_green": {
+      "hits": 47,
+      "total": 299,
+      "frac": 0.157,
+      "present": true
+    },
+    "mural@2,2:honey_gold": {
+      "hits": 50,
+      "total": 840,
+      "frac": 0.06,
+      "present": true
+    },
+    "seed@4,3:hearth_amber": {
+      "hits": 37,
+      "total": 132,
+      "frac": 0.28,
+      "present": true
+    },
+    "vine@1,4:fern_deep": {
+      "hits": 150,
+      "total": 380,
+      "frac": 0.395,
+      "present": true
+    }
+  },
+  "ui": {
+    "dialogue_cream_px": 7904,
+    "dialogue_text_px": 187,
+    "inventory_selected_glow_px": 78,
+    "interface_present": true
+  },
+  "unique_colors": 10455,
+  "counts": {
+    "warm": 39012,
+    "cool": 147991,
+    "foliage": 10099,
+    "glow": 269,
+    "warm_glow": 198,
+    "black": 0,
+    "total": 230400
+  },
+  "geometry": {
+    "iso_slope_2_to_1": true,
+    "iso_diag_symmetric": true,
+    "diamond_2_to_1": true,
+    "diamond_bounds": [
+      352,
+      200,
+      928,
+      488
+    ]
+  },
+  "draw_order": {
+    "tile_order_monotonic": true,
+    "props_after_own_tile": true,
+    "far_before_near": true,
+    "far_prop": "plant_bed",
+    "near_prop": "plant_bed",
+    "drawable_count": 175
+  },
+  "flat_fills": {
+    "floor_tile": {
+      "sample": "cream_parch",
+      "rgb": [
+        249,
+        237,
+        212
+      ],
+      "dE": 4.9,
+      "within_tolerance": true
+    },
+    "grass_tile": {
+      "sample": "moss_green",
+      "rgb": [
+        106,
+        156,
+        74
+      ],
+      "dE": 2.2,
+      "within_tolerance": true
+    }
+  },
+  "extrusion": {
+    "top_rgb": [
+      255,
+      242,
+      218
+    ],
+    "side_rgb": [
+      171,
+      163,
+      147
+    ],
+    "side_opaque": true,
+    "side_darker_than_top": true
+  },
+  "seed_bed_heights": {
+    "(4, 3)": 1
+  },
+  "sky_corner_rgb": [
+    34,
+    27,
+    49
+  ],
+  "sky_corner_violet": true,
+  "deterministic": true,
+  "animation_changes_frame": true,
+  "seed_taken": {
+    "warm_px_before": 140,
+    "warm_px_after": 0,
+    "changed": true
+  },
+  "checks": {
+    "size_is_1280x720": true,
+    "not_blank": true,
+    "warm_surfaces_present": true,
+    "cool_violet_ambient_present": true,
+    "foliage_present": true,
+    "firefly_glow_present": true,
+    "warm_lantern_glow_present": true,
+    "no_pure_black": true,
+    "floor_tile_on_palette": true,
+    "grass_tile_on_palette": true,
+    "raised_tile_extrudes": true,
+    "seed_bed_raised": true,
+    "sky_corner_violet": true,
+    "iso_slope_2_to_1": true,
+    "diamond_2_to_1": true,
+    "tile_order_monotonic": true,
+    "props_after_own_tile": true,
+    "far_before_near": true,
+    "props_present": true,
+    "interface_present": true,
+    "deterministic": true,
+    "animation_changes_frame": true,
+    "seed_taken_beat": true
+  },
+  "ok": true
+}

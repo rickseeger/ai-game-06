@@ -136,6 +136,7 @@ dismisses dialogue, Q quits.
     python3 -m emberglow.main --check         # render + full automated verification
     python3 -m emberglow.main --market-check  # node 16: Forge Market scene verification
     python3 -m emberglow.main --mill-check    # node 17: Mill Court scene verification
+    python3 -m emberglow.main --greenhouse-check  # node 18: Firefly Greenhouse scene verification
 
 ## Verify (automated, no vision)
 
@@ -143,6 +144,7 @@ dismisses dialogue, Q quits.
     python3 -m emberglow.main --check         # pixel sampling + geometry + draw order + beats
     python3 -m emberglow.main --market-check  # node 16: Forge Market room render + geometry + props
     python3 -m emberglow.main --mill-check    # node 17: Mill Court room render + geometry + props
+    python3 -m emberglow.main --greenhouse-check  # node 18: Firefly Greenhouse room render + geometry + props
     python3 -m emberglow.main --input-check   # node 4: key mapping + press/release
     python3 tools/demo_input.py               # node 4: actual-input runtime trace + frame dumps
     python3 tools/demo_traversal.py           # node 3: traversal demo (exits 0)
@@ -204,4 +206,13 @@ stacked timber, lantern posts) built to node 2's palette + visual language and
 wired into the live game, including the water_flowing beat (Brook water fills
 the race + pours from the spout). See docs/NODE17_SCENE.md; verify with
 `python3 -m emberglow.main --mill-check`.
+
+Node 18 (Firefly Greenhouse art) is complete and self-verifying: the
+greenhouse room is now an art-complete scene (glass house + glass walls,
+raised plant beds, the pulsing Ember-Seed on a raised planter, the painted
+founding-story Mural, vines over the west door, terracotta pots, a bench,
+and dense ambient fireflies) built to node 2's palette + visual language and
+wired into the live game, including the seed_taken beat (the seed dims and a
+cool pool settles over the bed). See docs/NODE18_SCENE.md; verify with
+`python3 -m emberglow.main --greenhouse-check`.
 

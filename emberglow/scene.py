@@ -336,3 +336,72 @@ def layout(room, w, h):
     ox = (w - span_w) // 2 + (room.grid - 1) * HW
     oy = 200
     return ox, oy
+
+
+# --------------------------------------------------------------------------- #
+# Firefly Greenhouse (node 18): a glass greenhouse glowing with drifting
+# fireflies -- the fourth art-complete room. Matches node 2's Hollow Gate, node
+# 16's Forge Market, and node 17's Mill Court in palette + visual language.
+# --------------------------------------------------------------------------- #
+def build_room_greenhouse():
+    grid = 9
+    # stone floor inside the glass house + the west door (from the Mill Court)
+    floor = {
+        (0, 4), (1, 4),                                   # west door + approach
+        (2, 2), (3, 2), (4, 2), (5, 2), (6, 2),
+        (2, 3), (3, 3), (4, 3), (5, 3), (6, 3),
+        (2, 4), (3, 4), (4, 4), (5, 4), (6, 4), (7, 4),
+        (2, 5), (3, 5), (4, 5), (5, 5), (6, 5), (7, 5),
+        (2, 6), (3, 6), (4, 6), (5, 6), (6, 6),
+    }
+    path = floor
+
+    # the ember-seed bed sits on a raised (h=1) stone planter -> 2.5D extrusion
+    heights = {(4, 3): 1}
+
+    props = [
+        # the glass house: back wall + pitched glass roof (north), east glass wall
+        Prop("glass_house", 4, 1),
+        Prop("glass_wall", 3, 1), Prop("glass_wall", 5, 1),
+        Prop("glass_wall", 7, 2), Prop("glass_wall", 7, 3),
+        # the room's two interactables (from world.json objects)
+        Prop("mural", 2, 2, interactable=True, glow="honey_gold"),
+        Prop("seed", 4, 3, h=1, interactable=True, glow="hearth_amber"),
+        # raised plant beds (worldmap obstacles) around the walls
+        Prop("plant_bed", 1, 1), Prop("plant_bed", 2, 1),
+        Prop("plant_bed", 6, 1), Prop("plant_bed", 7, 1),
+        Prop("plant_bed", 1, 6), Prop("plant_bed", 1, 7),
+        Prop("plant_bed", 7, 6), Prop("plant_bed", 7, 7),
+        # vines over the west door
+        Prop("vine", 1, 4), Prop("vine", 1, 3),
+        # cozy interior: terracotta pots + a bench
+        Prop("pot", 3, 4), Prop("pot", 6, 5), Prop("pot", 5, 2),
+        Prop("bench", 2, 6),
+        # one warm lantern post (clear of the glass, cozy warm light)
+        Prop("lantern_post", 6, 4, glow="hearth_amber"),
+        # ambient greenery + ground dressing (as gate/market/mill)
+        Prop("mushroom", 3, 6), Prop("mushroom", 5, 6), Prop("mushroom", 8, 2),
+        Prop("rock", 8, 5), Prop("rock", 0, 2),
+        Prop("grass_tuft", 3, 7), Prop("grass_tuft", 5, 7), Prop("grass_tuft", 8, 3),
+        Prop("grass_tuft", 0, 5), Prop("grass_tuft", 6, 2),
+        Prop("flower", 4, 2), Prop("flower", 2, 5), Prop("flower", 6, 6),
+        Prop("flower", 1, 2),
+    ]
+
+    glows = [
+        Glow(2.0, 2.0, "honey_gold", 46, 70),       # the mural's painted light
+        Glow(6.0, 4.0, "hearth_amber", 56, 78),     # lantern post
+        Glow(4.0, 4.0, "firefly_glow", 52, 64),     # firefly cluster (green-gold)
+        Glow(3.0, 5.0, "firefly_glow", 44, 56),     # firefly cluster
+        Glow(6.5, 2.5, "firefly_glow", 40, 50),     # firefly cluster (east)
+    ]
+
+    fireflies = [
+        (1.9, 3.1), (2.6, 4.2), (3.4, 2.4), (4.3, 4.8), (5.2, 3.2),
+        (6.1, 4.4), (3.1, 5.6), (4.8, 6.1), (5.9, 5.4), (2.4, 5.9),
+        (6.4, 2.8), (4.6, 2.6), (3.8, 3.8), (5.4, 4.0), (6.9, 5.6),
+    ]
+
+    return Room(grid, "Firefly Greenhouse",
+                "a glass greenhouse glowing with fireflies", heights, path,
+                props, glows, fireflies)

@@ -516,6 +516,9 @@ def get_sprite(kind, gx=0, gy=0):
             "spout_flow": build_spout_flow,
             "seed": build_seed, "seed_bed": build_seed_bed, "water": build_water,
             "forge_flash": build_forge_flash, "stair_light": build_stair_light,
+            "glass_house": build_glass_house, "glass_wall": build_glass_wall,
+            "plant_bed": build_plant_bed, "mural": build_mural,
+            "vine": build_vine, "pot": build_pot, "bench": build_bench,
         }
         _sprite_cache[key] = builders[kind](gx, gy)
     return _sprite_cache[key]
@@ -694,4 +697,144 @@ def build_stair_light(gx, gy):
     ellipse(s, PALETTE["honey_gold"], (8, 8, 48, 24))
     ellipse(s, PALETTE["hearth_amber"], (16, 12, 32, 16))
     painterly_repaint(s, (8, 8, 48, 24), PALETTE["honey_gold"], gx, gy)
+    return finish(s)
+
+
+# --------------------------------------------------------------------------- #
+# Firefly Greenhouse props (node 18): glass walls + glass house, plant beds,
+# the painted mural, vines over the door, terracotta pots, a bench.
+# --------------------------------------------------------------------------- #
+def build_glass_wall(gx, gy):
+    s = new_surf(84, 96)
+    # opaque frame (painterly) first so the brush touches only the wood
+    rect(s, PALETTE["bark_brown"], (4, 4, 76, 88))       # outer border
+    rect(s, PALETTE["bark_brown"], (40, 4, 6, 88))       # vertical mullion
+    rect(s, PALETTE["bark_brown"], (4, 46, 76, 6))       # horizontal rail
+    painterly_repaint(s, (4, 4, 76, 88), PALETTE["bark_brown"], gx, gy)
+    # translucent cream-parchment glass panes (the scene shows through)
+    for px, py in ((9, 9), (49, 9), (9, 55), (49, 55)):
+        pygame.draw.rect(s, (*PALETTE["cream_parch"], 150),
+                         (px * SCALE, py * SCALE, 26 * SCALE, 28 * SCALE))
+    # cool violet sheen streak (glass reflection) + fireflies drifting inside
+    pygame.draw.polygon(s, (*PALETTE["twilight_violet"], 90),
+                        [(10 * SCALE, 10 * SCALE), (30 * SCALE, 10 * SCALE),
+                         (10 * SCALE, 44 * SCALE)])
+    circle(s, PALETTE["firefly_glow"], 60, 70, 5)
+    circle(s, PALETTE["firefly_glow"], 20, 60, 4)
+    return finish(s)
+
+
+def build_glass_house(gx, gy):
+    s = new_surf(160, 150)
+    # pitched translucent glass roof (cream-parchment, scene shows through)
+    pygame.draw.polygon(s, (*PALETTE["cream_parch"], 150),
+                        [(8 * SCALE, 44 * SCALE), (80 * SCALE, 6 * SCALE),
+                         (152 * SCALE, 44 * SCALE)])
+    # roof ridge + eave frame (bark)
+    pygame.draw.polygon(s, (*PALETTE["bark_brown"], 255),
+                        [(80 * SCALE, 6 * SCALE), (86 * SCALE, 8 * SCALE),
+                         (80 * SCALE, 12 * SCALE)])
+    rect(s, PALETTE["bark_brown"], (6, 40, 148, 6))     # eave line
+    # translucent glass wall band below the roof
+    for cx in (14, 46, 78, 110):
+        for cy in (52, 84):
+            pygame.draw.rect(s, (*PALETTE["cream_parch"], 150),
+                             (cx * SCALE, cy * SCALE, 26 * SCALE, 28 * SCALE))
+    # wall frame (bark) mullions + rails (opaque, over the panes)
+    for x in (14, 46, 78, 110):
+        rect(s, PALETTE["bark_brown"], (x - 4, 52, 5, 60))
+    rect(s, PALETTE["bark_brown"], (8, 48, 144, 6))     # top wall rail
+    rect(s, PALETTE["bark_brown"], (8, 112, 144, 6))    # bottom wall rail
+    # stone foundation sill (painterly)
+    rect(s, PALETTE["bark_brown"], (6, 118, 148, 16))
+    painterly_repaint(s, (6, 118, 148, 16), PALETTE["bark_brown"], gx, gy)
+    # cool sheen on the roof + firefly glow inside the glass
+    pygame.draw.polygon(s, (*PALETTE["twilight_violet"], 85),
+                        [(20 * SCALE, 42 * SCALE), (60 * SCALE, 20 * SCALE),
+                         (20 * SCALE, 20 * SCALE)])
+    circle(s, PALETTE["firefly_glow"], 40, 90, 5)
+    circle(s, PALETTE["firefly_glow"], 96, 76, 5)
+    circle(s, PALETTE["firefly_glow"], 120, 92, 4)
+    return finish(s)
+
+
+def build_plant_bed(gx, gy):
+    s = new_surf(72, 40)
+    # raised wooden planter box (bark) with a soft violet shade
+    rect(s, PALETTE["bark_brown"], (6, 14, 60, 22))
+    rect(s, darken(PALETTE["bark_brown"], 0.8), (6, 14, 60, 4))
+    rect(s, mix(PALETTE["bark_brown"], PALETTE["twilight_violet"], 0.25), (10, 20, 52, 12))
+    painterly_repaint(s, (6, 14, 60, 22), PALETTE["bark_brown"], gx, gy)
+    # dark warm soil mound + moss/fern sprouts
+    ellipse(s, mix(PALETTE["bark_brown"], PALETTE["russet"], 0.5), (14, 8, 44, 12))
+    ellipse(s, PALETTE["moss_green"], (10, 2, 26, 14))
+    ellipse(s, PALETTE["fern_deep"], (34, 0, 26, 14))
+    ellipse(s, PALETTE["moss_green"], (52, 4, 14, 10))
+    circle(s, PALETTE["firefly_glow"], 26, 8, 3)
+    return finish(s)
+
+
+def build_mural(gx, gy):
+    s = new_surf(96, 88)
+    # stone wall backing (cream) + soft violet shade
+    rect(s, PALETTE["cream_parch"], (6, 4, 84, 80))
+    rect(s, mix(PALETTE["cream_parch"], PALETTE["twilight_violet"], 0.18), (6, 68, 84, 16))
+    painterly_repaint(s, (6, 4, 84, 80), PALETTE["cream_parch"], gx, gy)
+    # the painted founding story: light, water, and a growing seed
+    circle(s, PALETTE["hearth_amber"], 28, 22, 12)       # the heart-lantern light
+    circle(s, PALETTE["honey_gold"], 28, 22, 7)
+    pygame.draw.polygon(s, (*PALETTE["brook"], 255),      # a stream of water
+                        [(52 * SCALE, 12 * SCALE), (72 * SCALE, 12 * SCALE),
+                         (64 * SCALE, 40 * SCALE), (58 * SCALE, 40 * SCALE)])
+    ellipse(s, PALETTE["fern_deep"], (58, 44, 14, 22))     # a growing seed
+    ellipse(s, PALETTE["moss_green"], (62, 46, 8, 14))
+    # two painted keepers (bark + cream)
+    rect(s, PALETTE["bark_brown"], (20, 56, 6, 14))
+    circle(s, PALETTE["cream_parch"], 23, 52, 5)
+    rect(s, PALETTE["bark_brown"], (74, 56, 6, 14))
+    circle(s, PALETTE["cream_parch"], 77, 52, 5)
+    # firefly-glow sparkles in the painting
+    circle(s, PALETTE["firefly_glow"], 34, 40, 3)
+    circle(s, PALETTE["firefly_glow"], 60, 62, 3)
+    return finish(s)
+
+
+def build_vine(gx, gy):
+    s = new_surf(60, 64)
+    # trailing vine strands (fern) over the door
+    for x, h, w in [(12, 56, 6), (24, 62, 6), (36, 52, 6), (46, 58, 6)]:
+        rect(s, PALETTE["fern_deep"], (x, 4, w, h))
+    # leaf clusters
+    ellipse(s, PALETTE["moss_green"], (6, 6, 20, 14))
+    ellipse(s, PALETTE["moss_green"], (32, 2, 20, 14))
+    ellipse(s, PALETTE["fern_deep"], (18, 28, 22, 14))
+    ellipse(s, PALETTE["moss_green"], (40, 30, 16, 12))
+    # a firefly perched in the vines
+    circle(s, PALETTE["firefly_glow"], 30, 40, 4)
+    return finish(s)
+
+
+def build_pot(gx, gy):
+    s = new_surf(40, 44)
+    # terracotta pot (russet) + rim
+    polygon(s, PALETTE["russet"], [(8, 16), (32, 16), (28, 42), (12, 42)])
+    rect(s, darken(PALETTE["russet"], 0.8), (6, 12, 28, 6))
+    # a mossy plant sprouting
+    ellipse(s, PALETTE["moss_green"], (12, 2, 16, 12))
+    ellipse(s, PALETTE["fern_deep"], (20, 0, 12, 10))
+    circle(s, PALETTE["firefly_glow"], 20, 6, 2)
+    painterly_repaint(s, (8, 12, 24, 30), PALETTE["russet"], gx, gy)
+    return finish(s)
+
+
+def build_bench(gx, gy):
+    s = new_surf(64, 44)
+    # seat + back + legs (bark) with russet slat accents
+    rect(s, PALETTE["bark_brown"], (6, 18, 52, 8))
+    rect(s, PALETTE["bark_brown"], (6, 6, 8, 28))
+    rect(s, PALETTE["bark_brown"], (50, 6, 8, 28))
+    rect(s, darken(PALETTE["bark_brown"], 0.82), (6, 24, 52, 2))
+    rect(s, PALETTE["russet"], (8, 8, 4, 22))
+    rect(s, PALETTE["russet"], (52, 8, 4, 22))
+    painterly_repaint(s, (6, 6, 52, 24), PALETTE["bark_brown"], gx, gy)
     return finish(s)

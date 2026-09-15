@@ -717,3 +717,168 @@ def feedback_tone_check():
                and marker_russet(surf_f) > marker_gold(surf_f)
                and bands_differ),
     }
+
+
+def greenhouse_feature_presence(surface, room, ox, oy):
+    """Confirm the Firefly Greenhouse's key props are drawn (palette hit in box)."""
+    from .sprites import get_sprite
+    from .geometry import prop_anchor
+    feats = {}
+    for kind, gx, gy, name in [
+        ("glass_house", 4, 1, "bark_brown"),   # the greenhouse frame
+        ("glass_wall", 3, 1, "bark_brown"),    # glass wall frame
+        ("plant_bed", 2, 1, "moss_green"),     # the planter foliage
+        ("mural", 2, 2, "honey_gold"),         # the painted light
+        ("seed", 4, 3, "hearth_amber"),        # the live ember-seed
+        ("vine", 1, 4, "fern_deep"),           # vines over the door
+    ]:
+        p = next(pp for pp in room.props if pp.kind == kind and pp.gx == gx and pp.gy == gy)
+        fx, fy = prop_anchor(gx, gy, p.h, ox, oy)
+        spr = get_sprite(kind, gx, gy)
+        x0, y0 = fx - spr.get_width() // 2, fy - spr.get_height() + 2
+        target = PALETTE[name]
+        hit = total = 0
+        for py in range(max(0, y0), min(surface.get_height(), y0 + spr.get_height()), 2):
+            for px in range(max(0, x0), min(surface.get_width(), x0 + spr.get_width()), 2):
+                total += 1
+                if dE(surface.get_at((px, py))[:3], target) <= 60:
+                    hit += 1
+        feats[f"{kind}@{gx},{gy}:{name}"] = {
+            "hits": hit, "total": total,
+            "frac": round(hit / max(1, total), 3),
+            "present": hit > 20,
+        }
+    return feats
+
+
+def greenhouse_scene_checks():
+    """Node 18: render + verify the Firefly Greenhouse room (no vision tool).
+
+    Renders headlessly (SDL dummy driver), samples pixels for palette/lighting
+    invariants, asserts fixed-isometric geometry + painter's draw order + 2.5D
+    extrusion + prop presence, dumps a frame + ASCII structure map, and writes
+    evidence/greenhouse_check.json. Returns the results dict (with boolean "ok").
+    """
+    from .scene import build_room_greenhouse, render_room, layout
+    from . import ui
+    from .world import World
+    from .sprites import get_sprite
+    from .geometry import prop_anchor
+    import json as _json, os as _os
+
+    room = build_room_greenhouse()
+    t0 = 0.0
+    ox, oy = layout(room, 1280, 720)
+    surface = pygame.Surface((1280, 720))
+    render_room(surface, room, t0, ox, oy)
+    w, h = surface.get_size()
+
+    stats = _count_pixels(surface)
+    geom = geometry_checks(room, ox, oy)
+    order = market_draw_order_checks(room, t0, ox, oy)
+    fills = {
+        "floor_tile": flat_fill_check(surface, 2, 4, ox, oy, "cream_parch"),
+        "grass_tile": flat_fill_check(surface, 8, 4, ox, oy, "moss_green"),
+    }
+    extrude = raised_tile_extrusion_check()
+    feats = greenhouse_feature_presence(surface, room, ox, oy)
+
+    # determinism + animation actually changes the frame
+    s0b = pygame.Surface((w, h))
+    render_room(s0b, room, t0, ox, oy)
+    ident = pygame.image.tobytes(surface, "RGB") == pygame.image.tobytes(s0b, "RGB")
+    s1 = pygame.Surface((w, h))
+    render_room(s1, room, 0.4, ox, oy)
+    animated = pygame.image.tobytes(surface, "RGB") != pygame.image.tobytes(s1, "RGB")
+
+    # sky corner is cool violet (B >= R), never black
+    corner = surface.get_at((5, 5))[:3]
+    corner_violet = corner[2] >= corner[0] and corner[2] > 40
+
+    # UI frame (dump) + interface presence
+    ui_surface = pygame.Surface((w, h))
+    render_room(ui_surface, room, t0, ox, oy)
+    ui.draw_ui(ui_surface, room, ["", "", "", "", ""], 0, "the gardener",
+               "The seed-bed glows warm, and fireflies drift through the glass.")
+    ui_check = ui_presence(ui_surface)
+
+    # seed_taken beat: the ember-seed dims (warm spark -> dim seed-bed)
+    from . import worldreact
+    world = World()
+    room_taken = worldreact.build_scene_room(world, "greenhouse", frozenset({"seed_taken"}))
+    tsurf = pygame.Surface((w, h))
+    render_room(tsurf, room_taken, t0, ox, oy)
+
+    p = next(pp for pp in room.props if pp.kind == "seed" and pp.gx == 4 and pp.gy == 3)
+    fx, fy = prop_anchor(4, 3, p.h, ox, oy)
+    spr = get_sprite("seed", 4, 3)
+    sx0, sy0 = fx - spr.get_width() // 2, fy - spr.get_height() + 2
+    sw, sh = spr.get_width(), spr.get_height()
+
+    def seed_box_warm(surf):
+        n = 0
+        for py in range(max(0, sy0), min(h, sy0 + sh), 1):
+            for px in range(max(0, sx0), min(w, sx0 + sw), 1):
+                if _is_warm_amber(surf.get_at((px, py))[:3]):
+                    n += 1
+        return n
+
+    warm_before = seed_box_warm(surface)
+    warm_after = seed_box_warm(tsurf)
+
+    results = {
+        "size": [w, h],
+        "features": feats,
+        "ui": ui_check,
+        "unique_colors": stats["unique_colors"],
+        "counts": {k: v for k, v in stats.items() if k != "unique_colors"},
+        "geometry": geom,
+        "draw_order": order,
+        "flat_fills": fills,
+        "extrusion": extrude,
+        "seed_bed_heights": {str(k): v for k, v in sorted(room.heights.items())},
+        "sky_corner_rgb": list(corner), "sky_corner_violet": corner_violet,
+        "deterministic": ident,
+        "animation_changes_frame": animated,
+        "seed_taken": {
+            "warm_px_before": warm_before, "warm_px_after": warm_after,
+            "changed": warm_after < warm_before,
+        },
+    }
+
+    checks_dict = {
+        "size_is_1280x720": (w, h) == (1280, 720),
+        "not_blank": stats["unique_colors"] > 800,
+        "warm_surfaces_present": stats["warm"] > 1500,
+        "cool_violet_ambient_present": stats["cool"] > 20000,
+        "foliage_present": stats["foliage"] > 8000,
+        "firefly_glow_present": stats["glow"] > 20,
+        "warm_lantern_glow_present": stats["warm_glow"] > 150,
+        "no_pure_black": stats["black"] == 0,
+        "floor_tile_on_palette": fills["floor_tile"]["within_tolerance"],
+        "grass_tile_on_palette": fills["grass_tile"]["within_tolerance"],
+        "raised_tile_extrudes": extrude["side_darker_than_top"] and extrude["side_opaque"],
+        "seed_bed_raised": all(v == 1 for v in room.heights.values()),
+        "sky_corner_violet": corner_violet,
+        "iso_slope_2_to_1": geom["iso_slope_2_to_1"],
+        "diamond_2_to_1": geom["diamond_2_to_1"],
+        "tile_order_monotonic": order["tile_order_monotonic"],
+        "props_after_own_tile": order["props_after_own_tile"],
+        "far_before_near": order["far_before_near"],
+        "props_present": all(f["present"] for f in feats.values()),
+        "interface_present": ui_check["interface_present"],
+        "deterministic": ident,
+        "animation_changes_frame": animated,
+        "seed_taken_beat": results["seed_taken"]["changed"],
+    }
+    results["checks"] = checks_dict
+    results["ok"] = all(checks_dict.values())
+
+    _os.makedirs("evidence", exist_ok=True)
+    pygame.image.save(ui_surface, "evidence/greenhouse_scene.png")
+    pygame.image.save(surface, "evidence/greenhouse_scene_room.png")
+    with open("evidence/greenhouse_scene.ascii.txt", "w") as f:
+        f.write(ascii_map(surface) + "\n")
+    with open("evidence/greenhouse_check.json", "w") as f:
+        _json.dump(results, f, indent=2)
+    return results

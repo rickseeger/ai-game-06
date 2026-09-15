@@ -191,8 +191,8 @@
       "changed": true
     },
     "seed_taken": {
-      "warm_px_before": 37,
-      "warm_px_after": 0,
+      "warm_px_before": 57,
+      "warm_px_after": 20,
       "changed": true
     },
     "stair_open": {
@@ -255,7 +255,7 @@
     "success_failure_feedback_distinct": true
   },
   "ok": true,
-  "unit_tests_run": 101,
+  "unit_tests_run": 110,
   "unit_tests_failed": 0,
   "unit_tests_ok": true
 }
