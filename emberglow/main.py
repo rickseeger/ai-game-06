@@ -116,6 +116,14 @@ def run_check():
         "deterministic": ident,
         "animation_changes_frame": animated,
     }
+    # node 5: success-vs-failure feedback + world-reactivity beat pixel checks
+    beats = checks.world_beat_checks()
+    results["world_beat_checks"] = beats
+    checks_dict["all_world_beats_distinct"] = beats["all_beats_distinct"]
+    feedback = checks.feedback_tone_check()
+    results["feedback_tone_check"] = feedback
+    checks_dict["success_failure_feedback_distinct"] = feedback["ok"]
+
     results["checks"] = checks_dict
     results["ok"] = all(checks_dict.values())
 

@@ -410,6 +410,58 @@ def get_sprite(kind, gx=0, gy=0):
             "flower": build_flower, "fence": build_fence,
             "mallow": build_mallow, "player": build_player,
             "marker": build_marker,
+            "seed": build_seed, "seed_bed": build_seed_bed, "water": build_water,
+            "forge_flash": build_forge_flash, "stair_light": build_stair_light,
         }
         _sprite_cache[key] = builders[kind](gx, gy)
     return _sprite_cache[key]
+
+
+# --------------------------------------------------------------------------- #
+# Node 5: world-beat props (ember seed alive/dim, flowing mill-water)
+# --------------------------------------------------------------------------- #
+def build_seed(gx, gy):
+    """The ember-seed, alive and pulsing (before seed_taken)."""
+    s = new_surf(34, 38)
+    ellipse(s, PALETTE["hearth_amber"], (6, 10, 22, 24))
+    ellipse(s, PALETTE["honey_gold"], (10, 14, 14, 16))
+    ellipse(s, PALETTE["firefly_glow"], (12, 18, 10, 8))
+    circle(s, PALETTE["firefly_glow"], 17, 32, 3)
+    painterly_repaint(s, (6, 10, 22, 24), PALETTE["hearth_amber"], gx, gy)
+    return finish(s)
+
+
+def build_seed_bed(gx, gy):
+    """The greenhouse seed-bed after the ember-seed is taken (dimmed)."""
+    s = new_surf(44, 30)
+    ellipse(s, darken(PALETTE["moss_green"], 0.7), (4, 6, 36, 20))
+    ellipse(s, mix(PALETTE["bark_brown"], PALETTE["twilight_violet"], 0.4), (10, 12, 24, 12))
+    painterly_repaint(s, (4, 6, 36, 20), darken(PALETTE["moss_green"], 0.7), gx, gy)
+    return finish(s)
+
+
+def build_water(gx, gy):
+    """Flowing Brook water (cool accent) -- the mill-race / spout, once water_flowing."""
+    s = new_surf(64, 32)
+    ellipse(s, PALETTE["brook"], (6, 6, 52, 20))
+    ellipse(s, lighten(PALETTE["brook"], 0.3), (14, 9, 36, 12))
+    painterly_repaint(s, (6, 6, 52, 20), PALETTE["brook"], gx, gy)
+    return finish(s)
+
+
+def build_forge_flash(gx, gy):
+    """A solid warm flash over the forge (lens_ready): opaque, pixel-samplable."""
+    s = new_surf(56, 56)
+    circle(s, PALETTE["hearth_amber"], 28, 28, 26)
+    circle(s, PALETTE["honey_gold"], 28, 28, 17)
+    circle(s, PALETTE["firefly_glow"], 28, 28, 9)
+    return finish(s)
+
+
+def build_stair_light(gx, gy):
+    """A solid ribbon of warm light on the cleared Hill Stair (stair_open)."""
+    s = new_surf(64, 40)
+    ellipse(s, PALETTE["honey_gold"], (8, 8, 48, 24))
+    ellipse(s, PALETTE["hearth_amber"], (16, 12, 32, 16))
+    painterly_repaint(s, (8, 8, 48, 24), PALETTE["honey_gold"], gx, gy)
+    return finish(s)

@@ -87,6 +87,40 @@ Escape to dismiss, Q to quit. The on-screen hint and target readout are always
 visible; the firefly-glow marker + name label highlight the object you would
 interact with.
 
+## Node 5 deliverable: explicit verbs + inventory + dialogue + feedback
+
+The full classic-adventure interaction system now sits on top of the node-4 stub.
+The partial auto-apply stub is replaced by an explicit verb model:
+
+- `emberglow/verbs.py` -- the pure verb model and resolver. Four distinct verbs
+  (Examine / Talk / Take / Use-item-on-target, plus walk), the contextual E key,
+  inspectable objects (every prop + both characters have an examine line), cozy
+  multi-line conversations for Mallow and Bramble that progress through the story
+  beats, success/failure/locked lines, and a resolver that maps (verb, faced
+  target, selected item) onto an Outcome carrying the dialogue lines + the exact
+  flag/inventory change (which is the ONLY progression state -- never hardcoded
+  outside docs/world.json's actions).
+- `emberglow/game.py` -- the live controller: the four verb keys (X/T/G/U), a real
+  inventory with Tab/[ selection and item-use (use the selected item on the faced
+  target; consumed only on the correct target, otherwise a distinct failure line),
+  multi-line conversations advanced with the interact key, and visible success vs
+  failure feedback (dialogue-panel accent + target-marker stamp + prompt color).
+- `emberglow/worldreact.py` -- flag-aware scene building + the world-reactivity
+  beats (water_flowing, lens_ready, seed_taken, stair_open, lantern_lit, ended).
+- `emberglow/ui.py` / `emberglow/checks.py` -- tone-colored interface treatment and
+  pixel-sampling checks that prove success vs failure renders differently and each
+  world beat produces distinct pixels (vision-free).
+- `tests/test_verbs.py` -- verb model, acquisition + duplicate prevention, valid and
+  invalid item use, locked gating, bare "operate" actions, conversation progression,
+  and a full 11-action playthrough driven end-to-end by verbs.resolve.
+- `tools/demo_adventure.py` -- a full 11-action playthrough through the real event
+  queue (pygame.event.post -> get -> Game.handle_event) ending at 'ended', with a
+  JSON runtime trace + success/failure/lantern-lit/ended frame dumps.
+
+Controls: WASD/arrows walk, X examine, T talk, G take, U use (selected item),
+Tab/[ cycle the selected item, E is a contextual "do the obvious thing", Escape
+dismisses dialogue, Q quits.
+
 ## Install (one command)
 
     pip install -r requirements.txt
@@ -103,11 +137,12 @@ interact with.
 
 ## Verify (automated, no vision)
 
-    python3 -m unittest discover tests        # projection / palette / occlusion / input units
-    python3 -m emberglow.main --check         # pixel sampling + geometry + draw order
+    python3 -m unittest discover tests        # projection / palette / occlusion / input / verbs
+    python3 -m emberglow.main --check         # pixel sampling + geometry + draw order + beats
     python3 -m emberglow.main --input-check   # node 4: key mapping + press/release
     python3 tools/demo_input.py               # node 4: actual-input runtime trace + frame dumps
     python3 tools/demo_traversal.py           # node 3: traversal demo (exits 0)
+    python3 tools/demo_adventure.py           # node 5: full 11-action playthrough + beats/feedback
 
 `--check` renders the 1280x720 scene headlessly (SDL dummy driver) and asserts:
 fixed 2:1 projection, diamond 2:1 bounds, painter's-algorithm draw order (tiles
@@ -142,7 +177,13 @@ and self-verifying: 17 input tests + an actual-input runtime trace pass headless
 movement maps onto the grid traversal, and the on-screen controls + target readout
 render (verified by code-level pixel checks, not vision). The live `--play` loop
 uses this controller; a real keyboard on Rick's Pop!_OS is the final human
-confirmation of feel. Per-room art (market/mill/greenhouse/crown) and the full
-progression/world-reactivity wiring remain later nodes. Final aesthetic judgment
-is Rick's.
+confirmation of feel.
+
+Node 5 (explicit verbs + inventory + dialogue + feedback) is complete and
+self-verifying: 83 unit tests pass headless, tools/demo_adventure.py drives the
+full 11-action playthrough through the real event queue to 'ended', and the
+pixel-sampling checks prove success-vs-failure feedback is distinct and all six
+world-reactivity beats (water_flowing, lens_ready, seed_taken, stair_open,
+lantern_lit, ended) produce distinct pixels. Remaining: per-room art polish, soft
+audio, and final human aesthetic judgment (Rick's, on Pop!_OS).
 

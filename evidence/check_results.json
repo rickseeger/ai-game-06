@@ -36,15 +36,15 @@
     }
   },
   "ui": {
-    "dialogue_cream_px": 7748,
+    "dialogue_cream_px": 7731,
     "dialogue_text_px": 316,
     "inventory_selected_glow_px": 78,
     "interface_present": true
   },
   "unique_colors": 10722,
   "counts": {
-    "warm": 59864,
-    "cool": 129122,
+    "warm": 59741,
+    "cool": 129228,
     "foliage": 12984,
     "glow": 203,
     "warm_glow": 626,
@@ -179,6 +179,55 @@
       184
     ]
   },
+  "world_beat_checks": {
+    "water_flowing": {
+      "water_px_before": 0,
+      "water_px_after": 167,
+      "changed": true
+    },
+    "lens_ready": {
+      "gold_px_before": 18,
+      "gold_px_after": 183,
+      "changed": true
+    },
+    "seed_taken": {
+      "warm_px_before": 37,
+      "warm_px_after": 0,
+      "changed": true
+    },
+    "stair_open": {
+      "gold_px_before": 138,
+      "gold_px_after": 205,
+      "changed": true
+    },
+    "lantern_lit": {
+      "gold_px_before": 21,
+      "gold_px_after": 391,
+      "changed": true
+    },
+    "ended": {
+      "firefly_px_before": 67,
+      "firefly_px_after": 118,
+      "changed": true
+    },
+    "all_beats_distinct": true
+  },
+  "feedback_tone_check": {
+    "success_dialogue_gold_px": 102,
+    "success_dialogue_russet_px": 0,
+    "failure_dialogue_gold_px": 0,
+    "failure_dialogue_russet_px": 33,
+    "success_marker_gold_px": 37,
+    "success_marker_russet_px": 0,
+    "failure_marker_gold_px": 0,
+    "failure_marker_russet_px": 37,
+    "dialogue_success_reads_gold": true,
+    "dialogue_failure_reads_russet": true,
+    "marker_success_reads_gold": true,
+    "marker_failure_reads_russet": true,
+    "frames_differ": true,
+    "ok": true
+  },
   "checks": {
     "size_is_1280x720": true,
     "not_blank": true,
@@ -201,10 +250,12 @@
     "props_after_own_tile": true,
     "far_before_near": true,
     "deterministic": true,
-    "animation_changes_frame": true
+    "animation_changes_frame": true,
+    "all_world_beats_distinct": true,
+    "success_failure_feedback_distinct": true
   },
   "ok": true,
-  "unit_tests_run": 52,
+  "unit_tests_run": 83,
   "unit_tests_failed": 0,
   "unit_tests_ok": true
 }

@@ -17,8 +17,9 @@ import unittest
 
 import pygame
 
-from emberglow import inputmap
+from emberglow import inputmap, verbs
 from emberglow.game import Game, MOVE_INTERVAL
+from emberglow.world import State
 
 KEY = {
     inputmap.MOVE_NORTH: pygame.K_UP,
@@ -48,9 +49,17 @@ def pump(game, n, dt=MOVE_INTERVAL):
 
 class KeyMappingTests(unittest.TestCase):
     def test_every_binding_maps_to_its_action(self):
-        self.assertEqual(len(inputmap.KEY_TO_ACTION), 13)
+        self.assertEqual(len(inputmap.KEY_TO_ACTION), 19)
         for key, action in inputmap.KEY_TO_ACTION.items():
             self.assertEqual(inputmap.action_for_key(key), action)
+
+    def test_verb_bindings(self):
+        self.assertEqual(inputmap.action_for_key(pygame.K_x), inputmap.EXAMINE)
+        self.assertEqual(inputmap.action_for_key(pygame.K_t), inputmap.TALK)
+        self.assertEqual(inputmap.action_for_key(pygame.K_g), inputmap.TAKE)
+        self.assertEqual(inputmap.action_for_key(pygame.K_u), inputmap.USE)
+        self.assertEqual(inputmap.action_for_key(pygame.K_TAB), inputmap.NEXT_ITEM)
+        self.assertEqual(inputmap.action_for_key(pygame.K_LEFTBRACKET), inputmap.PREV_ITEM)
 
     def test_arrows_and_wasd_cover_all_four_directions(self):
         arrows = {pygame.K_UP: inputmap.MOVE_NORTH, pygame.K_DOWN: inputmap.MOVE_SOUTH,
@@ -165,7 +174,7 @@ class InputControllerTests(unittest.TestCase):
 
     def test_escape_dismisses_dialogue(self):
         g = self.game
-        g._open_dialogue("Mallow", "test line")
+        g._open_dialogue([("Mallow", "test line")])
         self.assertIsNotNone(g.dialogue)
         post(KEY[inputmap.DISMISS], True); pump(g, 1)
         post(KEY[inputmap.DISMISS], False); pump(g, 1)
@@ -186,6 +195,84 @@ class InputControllerTests(unittest.TestCase):
         self.assertIsNone(g.dialogue)
         self.assertEqual(g.state.flags, frozenset())
         self.assertEqual(g.state.inventory, frozenset())
+
+
+class VerbInputTests(unittest.TestCase):
+    """Explicit verbs + inventory selection, driven through the real input path."""
+
+    @classmethod
+    def setUpClass(cls):
+        pygame.init()
+        pygame.event.clear()
+
+    def setUp(self):
+        pygame.event.clear()
+        self.game = Game()
+
+    def test_tab_cycles_inventory_selection(self):
+        g = self.game
+        g.state = State("gate", (4, 6), inventory=frozenset({"crank_handle", "glass_flask", "lens"}))
+        g.selected_index = 0
+        self.assertEqual(g.selected_item(), "crank_handle")
+        post(pygame.K_TAB, True); pump(g, 1)
+        post(pygame.K_TAB, False); pump(g, 1)
+        self.assertEqual(g.selected_item(), "glass_flask")
+        post(pygame.K_TAB, True); pump(g, 1)
+        post(pygame.K_TAB, False); pump(g, 1)
+        self.assertEqual(g.selected_item(), "lens")
+        post(pygame.K_TAB, True); pump(g, 1)
+        post(pygame.K_TAB, False); pump(g, 1)
+        self.assertEqual(g.selected_item(), "crank_handle")   # wraps around
+
+    def test_prev_item_cycles_backwards(self):
+        g = self.game
+        g.state = State("gate", (4, 6), inventory=frozenset({"crank_handle", "glass_flask"}))
+        g.selected_index = 0
+        post(pygame.K_LEFTBRACKET, True); pump(g, 1)
+        post(pygame.K_LEFTBRACKET, False); pump(g, 1)
+        self.assertEqual(g.selected_item(), "glass_flask")
+
+    def test_use_key_consumes_item_on_correct_target(self):
+        g = self.game
+        g.state = State("mill", (3, 3), inventory=frozenset({"crank_handle"}))
+        g._set_facing((-1, 0))                    # face crank socket (2,3)
+        self.assertEqual(g.target, "crank_socket")
+        post(pygame.K_u, True); pump(g, 1)
+        post(pygame.K_u, False); pump(g, 1)
+        self.assertIn("water_flowing", g.state.flags)
+        self.assertNotIn("crank_handle", g.state.inventory)
+        self.assertEqual(g.dialogue.tone, verbs.SUCCESS)
+
+    def test_use_key_wrong_item_fails_without_consume(self):
+        g = self.game
+        g.state = State("mill", (3, 3), inventory=frozenset({"glass_flask"}))
+        g._set_facing((-1, 0))                    # face crank socket (2,3)
+        post(pygame.K_u, True); pump(g, 1)
+        post(pygame.K_u, False); pump(g, 1)
+        self.assertNotIn("water_flowing", g.state.flags)
+        self.assertIn("glass_flask", g.state.inventory)
+        self.assertEqual(g.dialogue.tone, verbs.FAILURE)
+
+    def test_examine_key_opens_info_dialogue(self):
+        g = self.game
+        g._set_facing((-1, 0))                    # from (4,6) faces (3,6) empty
+        g.state = State("gate", (3, 3))
+        g._set_facing((-1, 0))                    # face Mallow (2,3)
+        post(pygame.K_x, True); pump(g, 1)
+        post(pygame.K_x, False); pump(g, 1)
+        self.assertEqual(g.dialogue.tone, verbs.INFO)
+        self.assertIn("Mallow", g.dialogue.text)
+        self.assertEqual(g.state.flags, frozenset())
+
+    def test_take_key_grants_seed(self):
+        g = self.game
+        g.state = State("greenhouse", (4, 4), flags=frozenset({"water_flowing"}))
+        g._set_facing((0, -1))                    # face ember_seed (4,3)
+        self.assertEqual(g.target, "ember_seed")
+        post(pygame.K_g, True); pump(g, 1)
+        post(pygame.K_g, False); pump(g, 1)
+        self.assertIn("ember_seed", g.state.inventory)
+        self.assertIn("seed_taken", g.state.flags)
 
 
 if __name__ == "__main__":

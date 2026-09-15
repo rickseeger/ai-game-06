@@ -260,14 +260,18 @@
       "frame": 12,
       "kind": "dialogue",
       "open": true,
-      "speaker": "Mallow"
+      "speaker": "Mallow",
+      "tone": "success",
+      "lines": 4
     },
     {
       "frame": 12,
       "kind": "interact",
       "target": "mallow",
-      "result": "performed",
+      "verb": "verb",
+      "result": "success",
       "action": "meet_mallow",
+      "detail": "Mallow gives you the crank",
       "flags": [
         "met_mallow"
       ],

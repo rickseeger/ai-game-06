@@ -19,8 +19,17 @@ INTERACT = "interact"
 DISMISS = "dismiss"
 QUIT = "quit"
 
+# Node 5: the explicit classic-adventure verbs (plus inventory selection).
+EXAMINE = "examine"
+TALK = "talk"
+TAKE = "take"
+USE = "use"
+NEXT_ITEM = "next_item"
+PREV_ITEM = "prev_item"
+
 ALL_ACTIONS: FrozenSet[str] = frozenset({
     MOVE_NORTH, MOVE_SOUTH, MOVE_EAST, MOVE_WEST, INTERACT, DISMISS, QUIT,
+    EXAMINE, TALK, TAKE, USE, NEXT_ITEM, PREV_ITEM,
 })
 
 MOVE_ACTIONS: FrozenSet[str] = frozenset({
@@ -28,8 +37,9 @@ MOVE_ACTIONS: FrozenSet[str] = frozenset({
 })
 
 # -- key -> action ------------------------------------------------------------
-# Arrows and WASD both move (aliases); E / Space / Return interact; Escape
-# dismisses the dialogue/interface; Q quits.
+# Arrows and WASD both move (aliases); E / Space / Return interact (contextual);
+# X examine, T talk, G take, U use (selected item on target), Tab / [ cycle the
+# selected inventory item; Escape dismisses the dialogue/interface; Q quits.
 KEY_TO_ACTION: Dict[int, str] = {
     pygame.K_UP: MOVE_NORTH,      pygame.K_w: MOVE_NORTH,
     pygame.K_DOWN: MOVE_SOUTH,    pygame.K_s: MOVE_SOUTH,
@@ -38,6 +48,12 @@ KEY_TO_ACTION: Dict[int, str] = {
     pygame.K_e: INTERACT,
     pygame.K_SPACE: INTERACT,
     pygame.K_RETURN: INTERACT,
+    pygame.K_x: EXAMINE,
+    pygame.K_t: TALK,
+    pygame.K_g: TAKE,
+    pygame.K_u: USE,
+    pygame.K_TAB: NEXT_ITEM,
+    pygame.K_LEFTBRACKET: PREV_ITEM,
     pygame.K_ESCAPE: DISMISS,
     pygame.K_q: QUIT,
 }
@@ -51,7 +67,8 @@ ACTION_DIRECTION: Dict[str, Tuple[int, int]] = {
 }
 
 # Human-readable on-screen controls hint (single line).
-CONTROLS_HINT = "move: WASD / arrows   interact: E / space   dismiss: esc   quit: q"
+CONTROLS_HINT = ("move: WASD/arrows  X:examine  T:talk  G:take  U:use  "
+                 "Tab:item  E:do  esc:dismiss  q:quit")
 
 
 def action_for_key(key: int) -> Optional[str]:

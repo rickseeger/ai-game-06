@@ -183,3 +183,204 @@ def ui_presence(surface):
     return {"dialogue_cream_px": cream, "dialogue_text_px": dark,
             "inventory_selected_glow_px": glow,
             "interface_present": cream > 60 and dark > 12 and glow > 4}
+
+
+# --------------------------------------------------------------------------- #
+# Node 5: success-vs-failure feedback + world-reactivity beat pixel checks
+# --------------------------------------------------------------------------- #
+def _is_water(c):
+    """Brook (cool accent) water: cyan/blue, clearly distinct from violet ambient."""
+    r, g, b = c
+    return b > r + 20 and g > 100 and b > 120
+
+
+def _is_gold(c):
+    """Bright warm gold / amber (honey_gold / hearth_amber flash)."""
+    r, g, b = c
+    return r > 200 and 120 < g < 220 and b < 110
+
+
+def _is_russet(c):
+    return dE(c, PALETTE["russet"]) <= 45
+
+
+def _is_warm_amber(c):
+    return dE(c, PALETTE["hearth_amber"]) <= 50
+
+
+def _is_firefly(c):
+    r, g, b = c
+    return g > 200 and g > r and 80 < b < 210
+
+
+def _surface_count(surface, fn):
+    w, h = surface.get_size()
+    n = 0
+    for y in range(0, h, 2):
+        for x in range(0, w, 2):
+            if fn(surface.get_at((x, y))[:3]):
+                n += 1
+    return n
+
+
+def _region_count(surface, cx, cy, r, fn):
+    n = 0
+    for y in range(max(0, cy - r), min(surface.get_height(), cy + r), 2):
+        for x in range(max(0, cx - r), min(surface.get_width(), cx + r), 2):
+            if fn(surface.get_at((x, y))[:3]):
+                n += 1
+    return n
+
+
+def _scene_surface(rid, flags):
+    """Render one room under `flags`, headlessly; return (surface, ox, oy)."""
+    from . import worldreact
+    from .world import World
+    from .scene import layout, render_room
+    w = World()
+    room = worldreact.build_scene_room(w, rid, frozenset(flags))
+    ox, oy = layout(room, 1280, 720)
+    surf = pygame.Surface((1280, 720))
+    render_room(surf, room, 0.0, ox, oy)
+    return surf, ox, oy
+
+
+def world_beat_checks():
+    """Pixel-sampling proof that each world-reactivity beat changes the render."""
+    from .ui import tile_top_center
+    beats = {}
+
+    # 1. water_flowing -> Brook water appears in the mill (was dry)
+    before, _, _ = _scene_surface("mill", [])
+    after, ox, oy = _scene_surface("mill", ["water_flowing"])
+    beats["water_flowing"] = {
+        "water_px_before": _surface_count(before, _is_water),
+        "water_px_after": _surface_count(after, _is_water),
+        "changed": _surface_count(after, _is_water) > _surface_count(before, _is_water) + 10,
+    }
+
+    # 2. lens_ready -> the forge flashes bright warm gold
+    before, _, _ = _scene_surface("market", [])
+    after, ox2, oy2 = _scene_surface("market", ["lens_ready"])
+    beats["lens_ready"] = {
+        "gold_px_before": _surface_count(before, _is_gold),
+        "gold_px_after": _surface_count(after, _is_gold),
+        "changed": _surface_count(after, _is_gold) > _surface_count(before, _is_gold) + 30,
+    }
+
+    # 3. seed_taken -> the greenhouse seed-bed dims (warm spark -> cool/dim)
+    before, ox3, oy3 = _scene_surface("greenhouse", ["water_flowing"])
+    after, _, _ = _scene_surface("greenhouse", ["water_flowing", "seed_taken"])
+    cx, cy = tile_top_center(4, 3, ox3, oy3)
+    beats["seed_taken"] = {
+        "warm_px_before": _region_count(before, cx, cy, 30, _is_warm_amber),
+        "warm_px_after": _region_count(after, cx, cy, 30, _is_warm_amber),
+        "changed": _region_count(after, cx, cy, 30, _is_warm_amber)
+                   < _region_count(before, cx, cy, 30, _is_warm_amber),
+    }
+
+    # 4. stair_open -> a ribbon of warm light on the cleared Hill Stair
+    before, ox4, oy4 = _scene_surface("gate", [])
+    after, _, _ = _scene_surface("gate", ["stair_open"])
+    cx, cy = tile_top_center(5, 1, ox4, oy4)
+    beats["stair_open"] = {
+        "gold_px_before": _region_count(before, cx, cy, 34, _is_gold),
+        "gold_px_after": _region_count(after, cx, cy, 34, _is_gold),
+        "changed": _region_count(after, cx, cy, 34, _is_gold)
+                   > _region_count(before, cx, cy, 34, _is_gold) + 6,
+    }
+
+    # 5. lantern_lit -> the Heart-Lantern floods the crown in warm light
+    before, _, _ = _scene_surface("crown", ["stair_open"])
+    after, _, _ = _scene_surface("crown", ["stair_open", "lantern_lit"])
+    beats["lantern_lit"] = {
+        "gold_px_before": _surface_count(before, _is_gold),
+        "gold_px_after": _surface_count(after, _is_gold),
+        "changed": _surface_count(after, _is_gold) > _surface_count(before, _is_gold) + 100,
+    }
+
+    # 6. ended -> fireflies pour back in a golden river
+    before, _, _ = _scene_surface("gate", ["lantern_lit"])
+    after, _, _ = _scene_surface("gate", ["lantern_lit", "ended"])
+    beats["ended"] = {
+        "firefly_px_before": _surface_count(before, _is_firefly),
+        "firefly_px_after": _surface_count(after, _is_firefly),
+        "changed": _surface_count(after, _is_firefly) > _surface_count(before, _is_firefly) + 8,
+    }
+
+    beats["all_beats_distinct"] = all(b["changed"] for b in beats.values())
+    return beats
+
+
+def feedback_tone_check():
+    """Prove success vs failure feedback renders differently (dialogue + marker).
+
+    Drives two real Game outcomes -- a valid item use (success) and a wrong-item
+    use (failure) -- and pixel-samples the dialogue panel accent + the target
+    marker glow to confirm success reads warm-gold and failure reads russet, and
+    that the two frames differ in the interface bands.
+    """
+    from .game import Game
+    from .world import State
+    from . import verbs
+
+    def frame(kind):
+        g = Game()
+        if kind == "success":
+            g.state = State("mill", (3, 3), inventory=frozenset({"crank_handle"}))
+        else:
+            g.state = State("mill", (3, 3), inventory=frozenset({"glass_flask"}))
+        g._set_facing((-1, 0))                # face crank socket (2,3)
+        g._verb(verbs.USE)
+        return g
+
+    gs = frame("success")
+    gf = frame("failure")
+    surf_s, ox, oy = gs.render(1280, 720, 0.0)
+    surf_f, _, _ = gf.render(1280, 720, 0.0)
+
+    w, h = surf_s.get_size()
+    # dialogue panel band (drawn at y = h-250 .. h-150)
+    def band_count(surface, fn):
+        n = 0
+        for y in range(h - 250, h - 150, 2):
+            for x in range(0, w, 2):
+                if fn(surface.get_at((x, y))[:3]):
+                    n += 1
+        return n
+
+    gold_s = band_count(surf_s, _is_gold)
+    russet_s = band_count(surf_s, _is_russet)
+    gold_f = band_count(surf_f, _is_gold)
+    russet_f = band_count(surf_f, _is_russet)
+
+    # target-marker stamp: the solid tone dot at the faced cell's center
+    from .ui import tile_top_center
+    tx, ty = tile_top_center(2, 3, ox, oy)
+    def marker_gold(surface):
+        return _region_count(surface, tx, ty, 9, _is_gold)
+    def marker_russet(surface):
+        return _region_count(surface, tx, ty, 9, _is_russet)
+
+    bands_differ = pygame.image.tobytes(surf_s, "RGB") != pygame.image.tobytes(surf_f, "RGB")
+
+    return {
+        "success_dialogue_gold_px": gold_s,
+        "success_dialogue_russet_px": russet_s,
+        "failure_dialogue_gold_px": gold_f,
+        "failure_dialogue_russet_px": russet_f,
+        "success_marker_gold_px": marker_gold(surf_s),
+        "success_marker_russet_px": marker_russet(surf_s),
+        "failure_marker_gold_px": marker_gold(surf_f),
+        "failure_marker_russet_px": marker_russet(surf_f),
+        "dialogue_success_reads_gold": gold_s > 3 and gold_s > russet_s,
+        "dialogue_failure_reads_russet": russet_f > 3 and russet_f > gold_f,
+        "marker_success_reads_gold": marker_gold(surf_s) > marker_russet(surf_s),
+        "marker_failure_reads_russet": marker_russet(surf_f) > marker_gold(surf_f),
+        "frames_differ": bands_differ,
+        "ok": (gold_s > 3 and gold_s > russet_s
+               and russet_f > 3 and russet_f > gold_f
+               and marker_gold(surf_s) > marker_russet(surf_s)
+               and marker_russet(surf_f) > marker_gold(surf_f)
+               and bands_differ),
+    }
