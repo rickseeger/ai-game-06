@@ -1069,3 +1069,97 @@ def crown_scene_checks():
     with open("evidence/crown_check.json", "w") as f:
         _json.dump(results, f, indent=2)
     return results
+
+
+# --------------------------------------------------------------------------- #
+# G13 node 14: population / catalog-agreement runtime evidence (no vision tool)
+# --------------------------------------------------------------------------- #
+def _render_room_variant(world, rid, flags, drop=None):
+    """Render one room headless; optionally drop a single prop (for diff checks)."""
+    from . import worldreact
+    from .scene import layout, render_room
+    room = worldreact.build_scene_room(world, rid, frozenset(flags))
+    if drop:
+        room.props = [p for p in room.props
+                      if not (p.gx == drop[0] and p.gy == drop[1] and p.kind == drop[2])]
+    ox, oy = layout(room, 1280, 720)
+    surf = pygame.Surface((1280, 720))
+    render_room(surf, room, 0.0, ox, oy)
+    return surf, room, ox, oy
+
+
+def population_checks():
+    """Every docs/world.json entity renders in place (diff-based, no vision tool).
+
+    Renders each finished room headless, then for each catalog object renders the
+    same room with that prop removed and diffs its sprite footprint: a positive
+    diff means the entity actually paints pixels at its designed cell. Also records
+    the prop's interactable flag and a Firefly-Glow halo-band pixel count (the
+    inspectability signal). Dumps one frame + ASCII map per room and writes
+    evidence/node14_population.json.
+    """
+    import json as _json
+    import os as _os
+    from . import worldreact
+    from .world import World
+    from .sprites import get_sprite
+    from .geometry import prop_anchor
+
+    w = World()
+    rooms_order = ["gate", "market", "mill", "greenhouse", "crown"]
+    entities = {}
+    frames = []
+    for rid in rooms_order:
+        surf, room, ox, oy = _render_room_variant(w, rid, [])
+        _os.makedirs("evidence", exist_ok=True)
+        pygame.image.save(surf, f"evidence/node14_{rid}.png")
+        with open(f"evidence/node14_{rid}.ascii.txt", "w") as f:
+            f.write(ascii_map(surf) + "\n")
+        frames.append({"room": rid, "frame": f"evidence/node14_{rid}.png",
+                       "ascii": f"evidence/node14_{rid}.ascii.txt"})
+        for name, cell in w.data["rooms"][rid]["objects"].items():
+            kind = worldreact.OBJECT_PROP_KIND[name]
+            prop = next(p for p in room.props
+                        if p.gx == cell[0] and p.gy == cell[1] and p.kind == kind)
+            fx, fy = prop_anchor(cell[0], cell[1], prop.h, ox, oy)
+            spr = get_sprite(kind, cell[0], cell[1])
+            x0 = fx - spr.get_width() // 2
+            y0 = fy - spr.get_height() + 2
+            x1 = x0 + spr.get_width()
+            y1 = y0 + spr.get_height()
+            surf2, _, _, _ = _render_room_variant(w, rid, [],
+                                                  drop=(cell[0], cell[1], kind))
+            diff = 0
+            for py in range(max(0, y0), min(720, y1)):
+                for px in range(max(0, x0), min(1280, x1)):
+                    if surf.get_at((px, py))[:3] != surf2.get_at((px, py))[:3]:
+                        diff += 1
+            # Firefly-Glow halo band above the prop base (interactable signal)
+            halo = 0
+            for py in range(max(0, fy - 70), min(720, fy - 10)):
+                for px in range(max(0, fx - 30), min(1280, fx + 30)):
+                    r, g, b = surf.get_at((px, py))[:3]
+                    if g > r and g > b and g > 100:
+                        halo += 1
+            entities[f"{rid}.{name}"] = {
+                "cell": list(cell), "kind": kind,
+                "interactable": bool(prop.interactable),
+                "sprite": [spr.get_width(), spr.get_height()],
+                "diff_pixels": diff,
+                "halo_glow_pixels": halo,
+                "present": diff >= 20,
+            }
+    ok = all(e["present"] for e in entities.values())
+    report = {
+        "driver": "SDL dummy (headless)",
+        "method": "render each room, re-render with the entity's prop dropped, and "
+                  "diff the sprite footprint; a positive diff proves the entity "
+                  "draws in place at its world.json cell. No vision tool.",
+        "entities": entities,
+        "frames": frames,
+        "ok": ok,
+    }
+    _os.makedirs("evidence", exist_ok=True)
+    with open("evidence/node14_population.json", "w") as f:
+        _json.dump(report, f, indent=2)
+    return report

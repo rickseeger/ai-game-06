@@ -1,0 +1,309 @@
+{
+  "driver": "SDL dummy (headless)",
+  "input_path": "pygame.event.post -> pygame.event.get -> Game.handle_event (the real SDL keyboard event queue; no direct game-state calls)",
+  "population": {
+    "driver": "SDL dummy (headless)",
+    "method": "render each room, re-render with the entity's prop dropped, and diff the sprite footprint; a positive diff proves the entity draws in place at its world.json cell. No vision tool.",
+    "entities": {
+      "gate.mallow": {
+        "cell": [
+          2,
+          3
+        ],
+        "kind": "mallow",
+        "interactable": true,
+        "sprite": [
+          48,
+          60
+        ],
+        "diff_pixels": 2619,
+        "halo_glow_pixels": 1874,
+        "present": true
+      },
+      "gate.hollow_bell": {
+        "cell": [
+          6,
+          3
+        ],
+        "kind": "bell",
+        "interactable": true,
+        "sprite": [
+          68,
+          74
+        ],
+        "diff_pixels": 4176,
+        "halo_glow_pixels": 267,
+        "present": true
+      },
+      "gate.hill_stair": {
+        "cell": [
+          5,
+          1
+        ],
+        "kind": "stair",
+        "interactable": true,
+        "sprite": [
+          105,
+          62
+        ],
+        "diff_pixels": 3894,
+        "halo_glow_pixels": 1770,
+        "present": true
+      },
+      "market.bramble": {
+        "cell": [
+          2,
+          3
+        ],
+        "kind": "bramble",
+        "interactable": true,
+        "sprite": [
+          51,
+          61
+        ],
+        "diff_pixels": 2734,
+        "halo_glow_pixels": 2073,
+        "present": true
+      },
+      "market.forge": {
+        "cell": [
+          6,
+          3
+        ],
+        "kind": "forge",
+        "interactable": true,
+        "sprite": [
+          93,
+          87
+        ],
+        "diff_pixels": 4738,
+        "halo_glow_pixels": 70,
+        "present": true
+      },
+      "mill.crank_socket": {
+        "cell": [
+          2,
+          3
+        ],
+        "kind": "crank_socket",
+        "interactable": true,
+        "sprite": [
+          35,
+          37
+        ],
+        "diff_pixels": 1295,
+        "halo_glow_pixels": 2364,
+        "present": true
+      },
+      "mill.water_spout": {
+        "cell": [
+          6,
+          3
+        ],
+        "kind": "water_spout",
+        "interactable": true,
+        "sprite": [
+          35,
+          40
+        ],
+        "diff_pixels": 1372,
+        "halo_glow_pixels": 2482,
+        "present": true
+      },
+      "greenhouse.ember_seed": {
+        "cell": [
+          4,
+          3
+        ],
+        "kind": "seed",
+        "interactable": true,
+        "sprite": [
+          21,
+          24
+        ],
+        "diff_pixels": 504,
+        "halo_glow_pixels": 830,
+        "present": true
+      },
+      "greenhouse.mural": {
+        "cell": [
+          2,
+          2
+        ],
+        "kind": "mural",
+        "interactable": true,
+        "sprite": [
+          60,
+          55
+        ],
+        "diff_pixels": 3192,
+        "halo_glow_pixels": 1609,
+        "present": true
+      },
+      "crown.seed_cradle": {
+        "cell": [
+          3,
+          3
+        ],
+        "kind": "seed_cradle",
+        "interactable": true,
+        "sprite": [
+          35,
+          29
+        ],
+        "diff_pixels": 1003,
+        "halo_glow_pixels": 2984,
+        "present": true
+      },
+      "crown.lens_mount": {
+        "cell": [
+          5,
+          3
+        ],
+        "kind": "lens_mount",
+        "interactable": true,
+        "sprite": [
+          35,
+          37
+        ],
+        "diff_pixels": 1250,
+        "halo_glow_pixels": 2718,
+        "present": true
+      },
+      "crown.focus_wheel": {
+        "cell": [
+          4,
+          6
+        ],
+        "kind": "focus_wheel",
+        "interactable": true,
+        "sprite": [
+          45,
+          45
+        ],
+        "diff_pixels": 2025,
+        "halo_glow_pixels": 78,
+        "present": true
+      }
+    },
+    "frames": [
+      {
+        "room": "gate",
+        "frame": "evidence/node14_gate.png",
+        "ascii": "evidence/node14_gate.ascii.txt"
+      },
+      {
+        "room": "market",
+        "frame": "evidence/node14_market.png",
+        "ascii": "evidence/node14_market.ascii.txt"
+      },
+      {
+        "room": "mill",
+        "frame": "evidence/node14_mill.png",
+        "ascii": "evidence/node14_mill.ascii.txt"
+      },
+      {
+        "room": "greenhouse",
+        "frame": "evidence/node14_greenhouse.png",
+        "ascii": "evidence/node14_greenhouse.ascii.txt"
+      },
+      {
+        "room": "crown",
+        "frame": "evidence/node14_crown.png",
+        "ascii": "evidence/node14_crown.ascii.txt"
+      }
+    ],
+    "ok": true
+  },
+  "handoffs": {
+    "mallow": {
+      "item": "crank_handle",
+      "flag": "met_mallow",
+      "lines": [
+        "Ah -- the young ember-keeper. You've come at the worst of the Long Dusk.",
+        "The Heart-Lantern has gone out, and the hollow grows cold.",
+        "Take this crank -- it ought to free the stiff mill-wheel.",
+        "Water first, then the seed and the glass. Bring both back, and I'll clear the stair."
+      ]
+    },
+    "bramble": {
+      "item": "glass_flask",
+      "flag": "flask_received",
+      "lines": [
+        "Ember-keeper! The forge burns low, but it'll do the job.",
+        "You'll need mill-water for the old lens. Here, take this glass flask.",
+        "Fill it at the spout once the wheel turns, and bring it back full."
+      ]
+    },
+    "handoffs_land": true
+  },
+  "trace": [
+    {
+      "label": "spawn",
+      "room": "gate",
+      "pos": [
+        4,
+        6
+      ],
+      "target": null,
+      "dialogue": null,
+      "selected": null,
+      "flags": [],
+      "inventory": []
+    },
+    {
+      "label": "meet_mallow",
+      "room": "gate",
+      "pos": [
+        2,
+        2
+      ],
+      "target": "mallow",
+      "dialogue": "Mallow",
+      "selected": "crank_handle",
+      "flags": [
+        "met_mallow"
+      ],
+      "inventory": [
+        "crank_handle"
+      ]
+    },
+    {
+      "label": "request_flask",
+      "room": "market",
+      "pos": [
+        2,
+        2
+      ],
+      "target": "bramble",
+      "dialogue": "Bramble",
+      "selected": "crank_handle",
+      "flags": [
+        "flask_received",
+        "met_mallow"
+      ],
+      "inventory": [
+        "crank_handle",
+        "glass_flask"
+      ]
+    }
+  ],
+  "final_state": {
+    "room": "market",
+    "pos": [
+      2,
+      2
+    ],
+    "target": "bramble",
+    "dialogue": null,
+    "selected": "crank_handle",
+    "flags": [
+      "flask_received",
+      "met_mallow"
+    ],
+    "inventory": [
+      "crank_handle",
+      "glass_flask"
+    ]
+  }
+}

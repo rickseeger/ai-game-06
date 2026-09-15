@@ -24,11 +24,26 @@ from .scene import (Room as SceneRoom, Prop, Glow, build_room_gate,
                    build_room_market, build_room_mill, build_room_greenhouse,
                    build_room_crown)
 
-# Object id -> prop kind for the generic (marker/rock) rooms, so the important
-# objects read distinctly even before their dedicated art lands in node 6.
+# Object id (docs/world.json ``objects`` / ``characters``) -> scene prop kind.
+#
+# This is the single catalog-agreement table for node 14's population contract:
+# every entity authored in docs/world.json must be placed in its room's finished
+# scene as exactly this prop kind, at the exact world.json grid cell. It backs the
+# generic (marker/rock) fallback scene AND the catalog-agreement test in
+# tests/test_population.py, so a divergence between the art and the data is caught
+# mechanically rather than by eye.
 OBJECT_PROP_KIND: Dict[str, str] = {
-    "ember_seed": "seed",
-    "mural": "marker",
+    # Hollow Gate
+    "mallow": "mallow", "hollow_bell": "bell", "hill_stair": "stair",
+    # Forge Market
+    "bramble": "bramble", "forge": "forge",
+    # Mill Court
+    "crank_socket": "crank_socket", "water_spout": "water_spout",
+    # Firefly Greenhouse
+    "ember_seed": "seed", "mural": "mural",
+    # Lantern Crown
+    "seed_cradle": "seed_cradle", "lens_mount": "lens_mount",
+    "focus_wheel": "focus_wheel",
 }
 
 # The four non-gate rooms' ambient fireflies (they return home on 'ended').

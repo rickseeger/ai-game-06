@@ -7,6 +7,7 @@ Usage:
   python3 -m emberglow.main --headless      # one frame -> evidence/scene_gate.png
   python3 -m emberglow.main --capture 6     # animation frames -> evidence/
   python3 -m emberglow.main --check         # render + full automated verification
+  python3 -m emberglow.main --population-check  # node 14: catalog entity render-in-place
 """
 
 import argparse
@@ -14,7 +15,7 @@ import json
 import os
 import sys
 
-if any(f in sys.argv for f in ("--headless", "--capture", "--check", "--input-check", "--mill-check", "--greenhouse-check", "--crown-check")):
+if any(f in sys.argv for f in ("--headless", "--capture", "--check", "--input-check", "--mill-check", "--greenhouse-check", "--crown-check", "--population-check")):
     os.environ.setdefault("SDL_VIDEODRIVER", "dummy")
     os.environ.setdefault("SDL_AUDIODRIVER", "dummy")
 
@@ -223,6 +224,16 @@ def run_crown_check():
     return 0 if results["ok"] else 1
 
 
+def run_population_check():
+    """Node 14: every world.json entity renders in place (catalog agreement)."""
+    from . import checks
+    import json
+    results = checks.population_checks()
+    print(json.dumps({k: v for k, v in results.items() if k != "entities"}, indent=2))
+    print(json.dumps(results["entities"], indent=2))
+    return 0 if results["ok"] else 1
+
+
 def run_play(w, h):
     """Live interactive game: real keyboard -> Game controller (the node-4 input path)."""
     from .game import Game
@@ -263,6 +274,7 @@ def main():
     ap.add_argument("--mill-check", action="store_true")
     ap.add_argument("--greenhouse-check", action="store_true")
     ap.add_argument("--crown-check", action="store_true")
+    ap.add_argument("--population-check", action="store_true")
     ap.add_argument("--input-check", action="store_true")
     ap.add_argument("--play", action="store_true")
     ap.add_argument("--size", default=f"{W}x{H}")
@@ -294,6 +306,11 @@ def main():
 
     if args.crown_check:
         code = run_crown_check()
+        pygame.quit()
+        return code
+
+    if args.population_check:
+        code = run_population_check()
         pygame.quit()
         return code
 
