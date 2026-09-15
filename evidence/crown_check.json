@@ -1,0 +1,187 @@
+{
+  "size": [
+    1280,
+    720
+  ],
+  "features": {
+    "lantern_tree@4,2:moss_green": {
+      "hits": 1802,
+      "total": 3640,
+      "frac": 0.495,
+      "present": true
+    },
+    "ridge@2,1:russet": {
+      "hits": 138,
+      "total": 325,
+      "frac": 0.425,
+      "present": true
+    },
+    "seed_cradle@3,3:cream_parch": {
+      "hits": 165,
+      "total": 270,
+      "frac": 0.611,
+      "present": true
+    },
+    "lens_mount@5,3:bark_brown": {
+      "hits": 72,
+      "total": 342,
+      "frac": 0.211,
+      "present": true
+    },
+    "focus_wheel@4,6:bark_brown": {
+      "hits": 102,
+      "total": 529,
+      "frac": 0.193,
+      "present": true
+    },
+    "lantern_post@2,4:hearth_amber": {
+      "hits": 65,
+      "total": 612,
+      "frac": 0.106,
+      "present": true
+    }
+  },
+  "ui": {
+    "dialogue_cream_px": 7872,
+    "dialogue_text_px": 221,
+    "inventory_selected_glow_px": 78,
+    "interface_present": true
+  },
+  "unique_colors": 11482,
+  "counts": {
+    "warm": 36286,
+    "cool": 147697,
+    "foliage": 13459,
+    "glow": 185,
+    "warm_glow": 301,
+    "black": 0,
+    "total": 230400
+  },
+  "geometry": {
+    "iso_slope_2_to_1": true,
+    "iso_diag_symmetric": true,
+    "diamond_2_to_1": true,
+    "diamond_bounds": [
+      352,
+      200,
+      928,
+      488
+    ]
+  },
+  "draw_order": {
+    "tile_order_monotonic": true,
+    "props_after_own_tile": true,
+    "far_before_near": true,
+    "far_prop": "rock",
+    "near_prop": "rock",
+    "drawable_count": 181
+  },
+  "flat_fills": {
+    "clearing_tile": {
+      "sample": "cream_parch",
+      "rgb": [
+        250,
+        235,
+        209
+      ],
+      "dE": 8.1,
+      "within_tolerance": true
+    },
+    "grass_tile": {
+      "sample": "moss_green",
+      "rgb": [
+        106,
+        156,
+        74
+      ],
+      "dE": 2.2,
+      "within_tolerance": true
+    },
+    "ridge_top": {
+      "sample": "moss_green",
+      "rgb": [
+        113,
+        151,
+        81
+      ],
+      "dE": 11.6,
+      "within_tolerance": true
+    }
+  },
+  "extrusion": {
+    "top_rgb": [
+      255,
+      242,
+      218
+    ],
+    "side_rgb": [
+      171,
+      163,
+      147
+    ],
+    "side_opaque": true,
+    "side_darker_than_top": true
+  },
+  "ridge_heights": {
+    "(1, 1)": 1,
+    "(2, 1)": 1,
+    "(3, 1)": 1,
+    "(3, 2)": 1,
+    "(4, 1)": 1,
+    "(4, 2)": 1,
+    "(5, 1)": 1,
+    "(6, 1)": 1,
+    "(7, 1)": 1
+  },
+  "sky_corner_rgb": [
+    34,
+    27,
+    49
+  ],
+  "sky_corner_violet": true,
+  "deterministic": true,
+  "animation_changes_frame": true,
+  "seed_planted": {
+    "warm_px_before": 0,
+    "warm_px_after": 33,
+    "changed": true
+  },
+  "lens_mounted": {
+    "brook_px_before": 0,
+    "brook_px_after": 7,
+    "changed": true
+  },
+  "lantern_lit": {
+    "gold_px_before": 511,
+    "gold_px_after": 1102,
+    "changed": true
+  },
+  "checks": {
+    "size_is_1280x720": true,
+    "not_blank": true,
+    "warm_surfaces_present": true,
+    "cool_violet_ambient_present": true,
+    "foliage_present": true,
+    "firefly_glow_present": true,
+    "warm_lantern_glow_present": true,
+    "no_pure_black": true,
+    "clearing_tile_on_palette": true,
+    "grass_tile_on_palette": true,
+    "raised_tile_extrudes": true,
+    "ridge_raised": true,
+    "sky_corner_violet": true,
+    "iso_slope_2_to_1": true,
+    "diamond_2_to_1": true,
+    "tile_order_monotonic": true,
+    "props_after_own_tile": true,
+    "far_before_near": true,
+    "props_present": true,
+    "interface_present": true,
+    "deterministic": true,
+    "animation_changes_frame": true,
+    "seed_planted_beat": true,
+    "lens_mounted_beat": true,
+    "lantern_lit_beat": true
+  },
+  "ok": true
+}

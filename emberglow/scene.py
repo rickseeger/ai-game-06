@@ -405,3 +405,80 @@ def build_room_greenhouse():
     return Room(grid, "Firefly Greenhouse",
                 "a glass greenhouse glowing with fireflies", heights, path,
                 props, glows, fireflies)
+
+
+# --------------------------------------------------------------------------- #
+# Lantern Crown (node 19): the hilltop where the Heart-Lantern waits -- a rocky
+# north ridge, the great lantern-crown tree hung with warm lanterns, the Seed
+# Cradle and Lens Mount, and the Focus Wheel. Matches node 2's Hollow Gate and
+# nodes 16/17/18's rooms in palette + visual language (warm lantern glow,
+# painterly tiles, Firefly-Glow halos on interactables, ambient fireflies).
+# --------------------------------------------------------------------------- #
+def build_room_crown():
+    grid = 9
+    # the hilltop clearing (cream-parch stone) -- the paved heart of the crown
+    clearing = {
+        (2, 3), (3, 3), (4, 3), (5, 3), (6, 3),
+        (2, 4), (3, 4), (4, 4), (5, 4), (6, 4),
+        (2, 5), (3, 5), (4, 5), (5, 5), (6, 5),
+        (3, 6), (4, 6), (5, 6),
+        (3, 7), (4, 7), (5, 7),
+    }
+    path_to_stair = {(4, 8)}          # south portal (down to the Hollow Gate)
+    path = clearing | path_to_stair
+
+    # raised hill crest (rocky north ridge) + the tree's mound -> 2.5D extrusion
+    ridge = {(x, 1) for x in range(1, 8)}
+    tree_mound = {(3, 2), (4, 2)}
+    heights = {cell: 1 for cell in ridge | tree_mound}
+
+    props = [
+        # the lantern-crown tree (the room's heart): a great tree hung with lanterns
+        Prop("lantern_tree", 4, 2, h=1),
+        Prop("grass_tuft", 3, 2, h=1),          # the tree's root-mound dressing
+        # rocky north ridge (the hill crest, on its raised tiles)
+        Prop("ridge", 2, 1, h=1), Prop("ridge", 3, 1, h=1),
+        Prop("ridge", 5, 1, h=1), Prop("ridge", 6, 1, h=1),
+        Prop("rock", 1, 1, h=1), Prop("rock", 7, 1, h=1),
+        Prop("grass_tuft", 4, 1, h=1),
+        # the room's three interactables (docs/world.json objects)
+        Prop("seed_cradle", 3, 3, interactable=True),
+        Prop("lens_mount", 5, 3, interactable=True),
+        Prop("focus_wheel", 4, 6, interactable=True),
+        # warm lantern posts around the clearing (lit, inviting)
+        Prop("lantern_post", 2, 4, glow="hearth_amber"),
+        Prop("lantern_post", 6, 4, glow="hearth_amber"),
+        Prop("lantern_post", 3, 7, glow="hearth_amber"),
+        # south ridge corners + the stair crest descending to the gate
+        Prop("rock", 1, 7), Prop("rock", 7, 7),
+        Prop("stair", 4, 8),
+        # ambient greenery + ground dressing (as gate/market/mill/greenhouse)
+        Prop("mushroom", 1, 4), Prop("mushroom", 7, 5), Prop("mushroom", 6, 6),
+        Prop("rock", 7, 2), Prop("rock", 0, 4),
+        Prop("grass_tuft", 1, 3), Prop("grass_tuft", 7, 3), Prop("grass_tuft", 2, 2),
+        Prop("grass_tuft", 5, 2), Prop("grass_tuft", 8, 3), Prop("grass_tuft", 2, 7),
+        Prop("grass_tuft", 6, 7), Prop("grass_tuft", 0, 6),
+        Prop("flower", 1, 5), Prop("flower", 7, 4), Prop("flower", 5, 7),
+        Prop("flower", 2, 6), Prop("flower", 6, 3), Prop("flower", 8, 5),
+        Prop("fence", 0, 3), Prop("fence", 0, 5),
+    ]
+
+    glows = [
+        # the crown of lanterns + clearing lantern posts (warm, inviting)
+        Glow(4.0, 2.0, "hearth_amber", 74, 80),   # the tree's lantern crown
+        Glow(4.0, 2.0, "honey_gold", 46, 66),     # the central Heart-Lantern
+        Glow(2.0, 4.0, "hearth_amber", 56, 74),   # west lantern post
+        Glow(6.0, 4.0, "hearth_amber", 56, 74),   # east lantern post
+        Glow(3.0, 7.0, "hearth_amber", 52, 68),   # south lantern post
+        Glow(3.0, 3.0, "honey_gold", 34, 46),     # seed cradle's soft light
+        Glow(5.0, 3.0, "honey_gold", 30, 42),     # lens mount's socket light
+    ]
+
+    fireflies = [
+        (2.2, 3.4), (5.8, 2.6), (3.4, 4.8), (6.2, 4.4), (2.6, 6.2),
+        (4.4, 6.6), (6.4, 6.0), (1.8, 5.2), (7.2, 3.2), (3.6, 2.8),
+        (5.2, 7.2), (2.0, 2.6),
+    ]
+
+    return Room(grid, "Lantern Crown", "a hilltop lit with lanterns", heights,
+                path, props, glows, fireflies)

@@ -201,8 +201,8 @@
       "changed": true
     },
     "lantern_lit": {
-      "gold_px_before": 27,
-      "gold_px_after": 631,
+      "gold_px_before": 517,
+      "gold_px_after": 1102,
       "changed": true
     },
     "ended": {
@@ -255,7 +255,7 @@
     "success_failure_feedback_distinct": true
   },
   "ok": true,
-  "unit_tests_run": 110,
+  "unit_tests_run": 120,
   "unit_tests_failed": 0,
   "unit_tests_ok": true
 }

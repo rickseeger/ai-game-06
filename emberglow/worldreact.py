@@ -21,7 +21,8 @@ from __future__ import annotations
 from typing import Dict, FrozenSet
 
 from .scene import (Room as SceneRoom, Prop, Glow, build_room_gate,
-                   build_room_market, build_room_mill, build_room_greenhouse)
+                   build_room_market, build_room_mill, build_room_greenhouse,
+                   build_room_crown)
 
 # Object id -> prop kind for the generic (marker/rock) rooms, so the important
 # objects read distinctly even before their dedicated art lands in node 6.
@@ -81,6 +82,20 @@ def apply_beats(world, room: SceneRoom, rid: str, flags: FrozenSet[str]) -> Scen
     if rid == "gate" and "stair_open" in F:
         room.props.append(Prop("stair_light", 5, 1))
 
+    # --- seed_planted: the ember-seed glows in the crown cradle ---------------
+    if rid == "crown":
+        for p in room.props:
+            if p.gx == 3 and p.gy == 3 and p.kind == "seed_cradle":
+                p.kind = "seed_cradle_planted" if "seed_planted" in F else "seed_cradle"
+                p.interactable = "seed_planted" not in F
+            if p.gx == 5 and p.gy == 3 and p.kind == "lens_mount":
+                p.kind = "lens_mount_lit" if "lens_mounted" in F else "lens_mount"
+                p.interactable = "lens_mounted" not in F
+        if "seed_planted" in F:
+            room.glows.append(Glow(3.0, 3.0, "hearth_amber", 40, 72))
+        if "lens_mounted" in F:
+            room.glows.append(Glow(5.0, 3.0, "honey_gold", 36, 62))
+
     # --- lantern_lit: the Heart-Lantern floods the crown in warm light --------
     if rid == "crown" and "lantern_lit" in F:
         room.glows.append(Glow(4.0, 3.0, "hearth_amber", 130, 230))
@@ -107,6 +122,8 @@ def build_scene_room(world, rid: str, flags: FrozenSet[str]) -> SceneRoom:
         room = build_room_mill()
     elif rid == "greenhouse":
         room = build_room_greenhouse()
+    elif rid == "crown":
+        room = build_room_crown()
     else:
         room = generic_scene(world, rid)
     # baseline ambient glows + fireflies for the non-gate rooms

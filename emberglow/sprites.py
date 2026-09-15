@@ -519,6 +519,11 @@ def get_sprite(kind, gx=0, gy=0):
             "glass_house": build_glass_house, "glass_wall": build_glass_wall,
             "plant_bed": build_plant_bed, "mural": build_mural,
             "vine": build_vine, "pot": build_pot, "bench": build_bench,
+            "lantern_tree": build_lantern_tree,
+            "seed_cradle": build_seed_cradle,
+            "seed_cradle_planted": build_seed_cradle_planted,
+            "lens_mount": build_lens_mount, "lens_mount_lit": build_lens_mount_lit,
+            "focus_wheel": build_focus_wheel, "ridge": build_ridge,
         }
         _sprite_cache[key] = builders[kind](gx, gy)
     return _sprite_cache[key]
@@ -837,4 +842,128 @@ def build_bench(gx, gy):
     rect(s, PALETTE["russet"], (8, 8, 4, 22))
     rect(s, PALETTE["russet"], (52, 8, 4, 22))
     painterly_repaint(s, (6, 6, 52, 24), PALETTE["bark_brown"], gx, gy)
+    return finish(s)
+
+
+# --------------------------------------------------------------------------- #
+# Lantern Crown props (node 19): the lantern-crown tree, seed cradle, lens
+# mount, focus wheel, and the rocky hill crest -- the fifth art-complete room.
+# --------------------------------------------------------------------------- #
+def build_lantern_tree(gx, gy):
+    s = new_surf(180, 210)
+    # trunk (bark-brown, tapered) + root flare + dark shadow side
+    polygon(s, PALETTE["bark_brown"], [(78, 120), (102, 120), (96, 196), (84, 196)])
+    polygon(s, darken(PALETTE["bark_brown"], 0.78), [(90, 120), (102, 120), (96, 196), (84, 196)])
+    ellipse(s, PALETTE["bark_brown"], (74, 188, 32, 16))
+    # moss-green canopy (layered, fern-deep shading)
+    ellipse(s, PALETTE["moss_green"], (30, 40, 120, 60))
+    ellipse(s, PALETTE["moss_green"], (60, 24, 100, 56))
+    ellipse(s, PALETTE["fern_deep"], (34, 58, 112, 34))
+    ellipse(s, PALETTE["fern_deep"], (66, 40, 70, 26))
+    # branches (bark) reaching into the canopy
+    for x0, y0, x1, y1 in [(90, 118, 52, 58), (90, 118, 128, 58),
+                           (90, 118, 72, 38), (90, 118, 112, 40)]:
+        pygame.draw.line(s, (*PALETTE["bark_brown"], 255),
+                         (x0 * SCALE, y0 * SCALE), (x1 * SCALE, y1 * SCALE), 5 * SCALE)
+    # the crown of hanging lanterns (warm, the room's signature)
+    for lx, ly in [(48, 74), (88, 66), (132, 74), (64, 96), (116, 96)]:
+        pygame.draw.line(s, (*PALETTE["bark_brown"], 255),
+                         (lx * SCALE, ly * SCALE), (lx * SCALE, (ly + 8) * SCALE), 2 * SCALE)
+        polygon(s, PALETTE["hearth_amber"], [(lx - 7, ly + 8), (lx + 7, ly + 8),
+                                            (lx + 5, ly + 16), (lx - 5, ly + 16)])
+        polygon(s, PALETTE["honey_gold"], [(lx - 4, ly + 10), (lx + 4, ly + 10),
+                                           (lx + 3, ly + 14), (lx - 3, ly + 14)])
+        circle(s, PALETTE["firefly_glow"], lx, ly + 12, 2)
+    # the central Heart-Lantern (larger, held high in the crown)
+    rect(s, PALETTE["russet"], (87, 34, 6, 22))                       # hanging ring
+    polygon(s, PALETTE["russet"], [(72, 56), (108, 56), (114, 80), (66, 80)])
+    polygon(s, PALETTE["hearth_amber"], [(80, 62), (100, 62), (104, 76), (76, 76)])
+    polygon(s, PALETTE["honey_gold"], [(85, 65), (95, 65), (97, 73), (83, 73)])
+    circle(s, PALETTE["firefly_glow"], 90, 69, 3)
+    painterly_repaint(s, (78, 120, 24, 76), PALETTE["bark_brown"], gx, gy)
+    painterly_repaint(s, (30, 40, 120, 60), PALETTE["moss_green"], gx, gy)
+    return finish(s)
+
+
+def build_seed_cradle(gx, gy):
+    s = new_surf(56, 46)
+    ellipse(s, PALETTE["cream_parch"], (6, 16, 44, 24))                       # stone bowl
+    ellipse(s, mix(PALETTE["cream_parch"], PALETTE["twilight_violet"], 0.18),
+            (10, 24, 36, 12))
+    ellipse(s, mix(PALETTE["bark_brown"], PALETTE["russet"], 0.5), (18, 12, 20, 12))  # empty hollow
+    ellipse(s, PALETTE["russet"], (6, 30, 44, 10))                           # stone rim
+    painterly_repaint(s, (6, 16, 44, 24), PALETTE["cream_parch"], gx, gy)
+    return finish(s)
+
+
+def build_seed_cradle_planted(gx, gy):
+    s = new_surf(56, 46)
+    ellipse(s, PALETTE["cream_parch"], (6, 16, 44, 24))
+    ellipse(s, mix(PALETTE["cream_parch"], PALETTE["twilight_violet"], 0.18),
+            (10, 24, 36, 12))
+    ellipse(s, mix(PALETTE["bark_brown"], PALETTE["russet"], 0.5), (18, 12, 20, 12))
+    # the planted ember-seed, warm and pulsing (big enough to sample clearly)
+    ellipse(s, PALETTE["hearth_amber"], (16, 8, 24, 28))
+    ellipse(s, PALETTE["honey_gold"], (20, 12, 14, 18))
+    ellipse(s, PALETTE["firefly_glow"], (24, 18, 8, 6))
+    circle(s, PALETTE["firefly_glow"], 28, 32, 2)
+    ellipse(s, PALETTE["russet"], (6, 30, 44, 10))
+    painterly_repaint(s, (6, 16, 44, 24), PALETTE["cream_parch"], gx, gy)
+    return finish(s)
+
+
+def build_lens_mount(gx, gy):
+    s = new_surf(56, 60)
+    rect(s, PALETTE["bark_brown"], (12, 32, 32, 24))                         # stone/bark post
+    rect(s, darken(PALETTE["bark_brown"], 0.82), (12, 48, 32, 8))
+    rect(s, PALETTE["russet"], (16, 22, 24, 12))                             # brass collar
+    circle(s, PALETTE["honey_gold"], 28, 22, 7)                              # empty socket mouth
+    circle(s, darken(PALETTE["honey_gold"], 0.7), 28, 22, 3)
+    painterly_repaint(s, (12, 32, 32, 24), PALETTE["bark_brown"], gx, gy)
+    return finish(s)
+
+
+def build_lens_mount_lit(gx, gy):
+    s = new_surf(56, 60)
+    rect(s, PALETTE["bark_brown"], (12, 32, 32, 24))
+    rect(s, darken(PALETTE["bark_brown"], 0.82), (12, 48, 32, 8))
+    rect(s, PALETTE["russet"], (16, 22, 24, 12))
+    # the dew-cooled lens, mounted (honey-gold with a clear cool brook glint)
+    circle(s, PALETTE["honey_gold"], 28, 20, 10)
+    circle(s, mix(PALETTE["honey_gold"], PALETTE["brook"], 0.4), 28, 20, 7)
+    circle(s, PALETTE["brook"], 33, 15, 3)      # cool dew glint (pixel-samplable)
+    circle(s, PALETTE["brook"], 23, 25, 2)
+    circle(s, PALETTE["cream_parch"], 25, 17, 2)
+    circle(s, PALETTE["firefly_glow"], 32, 24, 2)
+    painterly_repaint(s, (12, 32, 32, 24), PALETTE["bark_brown"], gx, gy)
+    return finish(s)
+
+
+def build_focus_wheel(gx, gy):
+    s = new_surf(72, 72)
+    cx, cy, r = 36, 36, 24
+    pygame.draw.circle(s, (*PALETTE["bark_brown"], 255),
+                       (cx * SCALE, cy * SCALE), r * SCALE, width=7 * SCALE)
+    for i in range(6):
+        ang = i * math.pi / 3.0
+        x2 = cx + int(round(math.cos(ang) * (r - 5)))
+        y2 = cy + int(round(math.sin(ang) * (r - 5)))
+        pygame.draw.line(s, (*PALETTE["bark_brown"], 255),
+                         (cx * SCALE, cy * SCALE), (x2 * SCALE, y2 * SCALE), 4 * SCALE)
+    circle(s, PALETTE["russet"], cx, cy, 7)                                  # axle
+    circle(s, PALETTE["honey_gold"], cx, cy, 3)                              # axle glint
+    rect(s, PALETTE["bark_brown"], (30, 52, 12, 18))                         # mount post
+    rect(s, darken(PALETTE["bark_brown"], 0.82), (30, 64, 12, 6))
+    painterly_repaint(s, (30, 52, 12, 18), PALETTE["bark_brown"], gx, gy)
+    return finish(s)
+
+
+def build_ridge(gx, gy):
+    s = new_surf(80, 40)
+    polygon(s, PALETTE["russet"], [(4, 34), (18, 14), (40, 8), (62, 14), (76, 34)])
+    polygon(s, darken(PALETTE["russet"], 0.72), [(4, 34), (18, 14), (34, 22), (12, 34)])
+    ellipse(s, PALETTE["moss_green"], (30, 4, 26, 12))
+    ellipse(s, PALETTE["fern_deep"], (46, 0, 22, 10))
+    circle(s, PALETTE["firefly_glow"], 56, 8, 2)
+    painterly_repaint(s, (4, 8, 72, 26), PALETTE["russet"], gx, gy)
     return finish(s)

@@ -882,3 +882,190 @@ def greenhouse_scene_checks():
     with open("evidence/greenhouse_check.json", "w") as f:
         _json.dump(results, f, indent=2)
     return results
+
+
+def crown_feature_presence(surface, room, ox, oy):
+    """Confirm the Lantern Crown's key props are drawn (palette hit in box)."""
+    from .sprites import get_sprite
+    from .geometry import prop_anchor
+    feats = {}
+    for kind, gx, gy, name in [
+        ("lantern_tree", 4, 2, "moss_green"),    # the canopy
+        ("ridge", 2, 1, "russet"),               # the rocky hill crest
+        ("seed_cradle", 3, 3, "cream_parch"),    # the stone cradle
+        ("lens_mount", 5, 3, "bark_brown"),      # the mount post
+        ("focus_wheel", 4, 6, "bark_brown"),     # the focus wheel
+        ("lantern_post", 2, 4, "hearth_amber"),  # the warm lantern
+    ]:
+        p = next(pp for pp in room.props if pp.kind == kind and pp.gx == gx and pp.gy == gy)
+        fx, fy = prop_anchor(gx, gy, p.h, ox, oy)
+        spr = get_sprite(kind, gx, gy)
+        x0, y0 = fx - spr.get_width() // 2, fy - spr.get_height() + 2
+        target = PALETTE[name]
+        hit = total = 0
+        for py in range(max(0, y0), min(surface.get_height(), y0 + spr.get_height()), 2):
+            for px in range(max(0, x0), min(surface.get_width(), x0 + spr.get_width()), 2):
+                total += 1
+                if dE(surface.get_at((px, py))[:3], target) <= 60:
+                    hit += 1
+        feats[f"{kind}@{gx},{gy}:{name}"] = {
+            "hits": hit, "total": total,
+            "frac": round(hit / max(1, total), 3),
+            "present": hit > 20,
+        }
+    return feats
+
+
+def crown_scene_checks():
+    """Node 19: render + verify the Lantern Crown room (no vision tool).
+
+    Renders headlessly (SDL dummy driver), samples pixels for palette/lighting
+    invariants, asserts fixed-isometric geometry + painter's draw order + 2.5D
+    extrusion + prop presence, dumps a frame + ASCII structure map, and writes
+    evidence/crown_check.json. Returns the results dict (with boolean "ok").
+    """
+    from .scene import build_room_crown, render_room, layout
+    from . import ui
+    from .world import World
+    from .sprites import get_sprite
+    from .geometry import prop_anchor
+    import json as _json, os as _os
+
+    room = build_room_crown()
+    t0 = 0.0
+    ox, oy = layout(room, 1280, 720)
+    surface = pygame.Surface((1280, 720))
+    render_room(surface, room, t0, ox, oy)
+    w, h = surface.get_size()
+
+    stats = _count_pixels(surface)
+    geom = geometry_checks(room, ox, oy)
+    order = market_draw_order_checks(room, t0, ox, oy)
+    fills = {
+        "clearing_tile": flat_fill_check(surface, 4, 4, ox, oy, "cream_parch"),
+        "grass_tile": flat_fill_check(surface, 8, 4, ox, oy, "moss_green"),
+        "ridge_top": flat_fill_check(surface, 2, 1, ox, oy, "moss_green", h=1),
+    }
+    extrude = raised_tile_extrusion_check()
+    feats = crown_feature_presence(surface, room, ox, oy)
+
+    # determinism + animation actually changes the frame
+    s0b = pygame.Surface((w, h))
+    render_room(s0b, room, t0, ox, oy)
+    ident = pygame.image.tobytes(surface, "RGB") == pygame.image.tobytes(s0b, "RGB")
+    s1 = pygame.Surface((w, h))
+    render_room(s1, room, 0.4, ox, oy)
+    animated = pygame.image.tobytes(surface, "RGB") != pygame.image.tobytes(s1, "RGB")
+
+    # sky corner is cool violet (B >= R), never black
+    corner = surface.get_at((5, 5))[:3]
+    corner_violet = corner[2] >= corner[0] and corner[2] > 40
+
+    # UI frame (dump) + interface presence
+    ui_surface = pygame.Surface((w, h))
+    render_room(ui_surface, room, t0, ox, oy)
+    ui.draw_ui(ui_surface, room, ["", "", "", "", ""], 0, "the gardener",
+               "The crown of lanterns glows warm, and the Heart-Lantern waits to be lit.")
+    ui_check = ui_presence(ui_surface)
+
+    # world-reactivity beats: seed_planted / lens_mounted / lantern_lit
+    from . import worldreact
+    world = World()
+
+    def box_count(room_for_box, surf, kind, gx, gy, fn):
+        p = next(pp for pp in room_for_box.props
+                 if pp.kind == kind and pp.gx == gx and pp.gy == gy)
+        fx, fy = prop_anchor(gx, gy, p.h, ox, oy)
+        spr = get_sprite(kind, gx, gy)
+        x0, y0 = fx - spr.get_width() // 2, fy - spr.get_height() + 2
+        n = 0
+        for py in range(max(0, y0), min(h, y0 + spr.get_height()), 1):
+            for px in range(max(0, x0), min(w, x0 + spr.get_width()), 1):
+                if fn(surf.get_at((px, py))[:3]):
+                    n += 1
+        return n
+
+    room_seed = worldreact.build_scene_room(world, "crown", frozenset({"seed_planted"}))
+    ssurf = pygame.Surface((w, h))
+    render_room(ssurf, room_seed, t0, ox, oy)
+    warm_seed_before = box_count(room, surface, "seed_cradle", 3, 3, _is_warm_amber)
+    warm_seed_after = box_count(room_seed, ssurf, "seed_cradle_planted", 3, 3, _is_warm_amber)
+
+    room_lens = worldreact.build_scene_room(world, "crown", frozenset({"lens_mounted"}))
+    lsurf = pygame.Surface((w, h))
+    render_room(lsurf, room_lens, t0, ox, oy)
+    brook_before = box_count(room, surface, "lens_mount", 5, 3, _is_water)
+    brook_after = box_count(room_lens, lsurf, "lens_mount_lit", 5, 3, _is_water)
+
+    room_lit = worldreact.build_scene_room(world, "crown", frozenset({"lantern_lit"}))
+    isurf = pygame.Surface((w, h))
+    render_room(isurf, room_lit, t0, ox, oy)
+    gold_before = _surface_count(surface, _is_gold)
+    gold_after = _surface_count(isurf, _is_gold)
+
+    results = {
+        "size": [w, h],
+        "features": feats,
+        "ui": ui_check,
+        "unique_colors": stats["unique_colors"],
+        "counts": {k: v for k, v in stats.items() if k != "unique_colors"},
+        "geometry": geom,
+        "draw_order": order,
+        "flat_fills": fills,
+        "extrusion": extrude,
+        "ridge_heights": {str(k): v for k, v in sorted(room.heights.items())},
+        "sky_corner_rgb": list(corner), "sky_corner_violet": corner_violet,
+        "deterministic": ident,
+        "animation_changes_frame": animated,
+        "seed_planted": {
+            "warm_px_before": warm_seed_before, "warm_px_after": warm_seed_after,
+            "changed": warm_seed_after > warm_seed_before + 10,
+        },
+        "lens_mounted": {
+            "brook_px_before": brook_before, "brook_px_after": brook_after,
+            "changed": brook_after > brook_before,
+        },
+        "lantern_lit": {
+            "gold_px_before": gold_before, "gold_px_after": gold_after,
+            "changed": gold_after > gold_before + 100,
+        },
+    }
+
+    checks_dict = {
+        "size_is_1280x720": (w, h) == (1280, 720),
+        "not_blank": stats["unique_colors"] > 800,
+        "warm_surfaces_present": stats["warm"] > 1500,
+        "cool_violet_ambient_present": stats["cool"] > 20000,
+        "foliage_present": stats["foliage"] > 2000,
+        "firefly_glow_present": stats["glow"] > 3,
+        "warm_lantern_glow_present": stats["warm_glow"] > 150,
+        "no_pure_black": stats["black"] == 0,
+        "clearing_tile_on_palette": fills["clearing_tile"]["within_tolerance"],
+        "grass_tile_on_palette": fills["grass_tile"]["within_tolerance"],
+        "raised_tile_extrudes": extrude["side_darker_than_top"] and extrude["side_opaque"],
+        "ridge_raised": all(v == 1 for v in room.heights.values()),
+        "sky_corner_violet": corner_violet,
+        "iso_slope_2_to_1": geom["iso_slope_2_to_1"],
+        "diamond_2_to_1": geom["diamond_2_to_1"],
+        "tile_order_monotonic": order["tile_order_monotonic"],
+        "props_after_own_tile": order["props_after_own_tile"],
+        "far_before_near": order["far_before_near"],
+        "props_present": all(f["present"] for f in feats.values()),
+        "interface_present": ui_check["interface_present"],
+        "deterministic": ident,
+        "animation_changes_frame": animated,
+        "seed_planted_beat": results["seed_planted"]["changed"],
+        "lens_mounted_beat": results["lens_mounted"]["changed"],
+        "lantern_lit_beat": results["lantern_lit"]["changed"],
+    }
+    results["checks"] = checks_dict
+    results["ok"] = all(checks_dict.values())
+
+    _os.makedirs("evidence", exist_ok=True)
+    pygame.image.save(ui_surface, "evidence/crown_scene.png")
+    pygame.image.save(surface, "evidence/crown_scene_room.png")
+    with open("evidence/crown_scene.ascii.txt", "w") as f:
+        f.write(ascii_map(surface) + "\n")
+    with open("evidence/crown_check.json", "w") as f:
+        _json.dump(results, f, indent=2)
+    return results
