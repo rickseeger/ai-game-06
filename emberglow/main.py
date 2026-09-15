@@ -175,6 +175,18 @@ def run_capture(n):
     return 0
 
 
+def run_market_check():
+    """Node 16: render + verify the Forge Market room (no vision tool)."""
+    from . import checks
+    import json
+    import pygame as _pg
+    results = checks.market_scene_checks()
+    print(json.dumps({k: v for k, v in results.items() if k != "palette"}, indent=2))
+    print("----- Forge Market structure map (W=warm g=green C=cool F=firefly) -----")
+    print(checks.ascii_map(_pg.image.load("evidence/market_scene_room.png")))
+    return 0 if results["ok"] else 1
+
+
 def run_play(w, h):
     """Live interactive game: real keyboard -> Game controller (the node-4 input path)."""
     from .game import Game
@@ -211,6 +223,7 @@ def main():
     ap.add_argument("--headless", action="store_true")
     ap.add_argument("--capture", type=int, default=0, metavar="N")
     ap.add_argument("--check", action="store_true")
+    ap.add_argument("--market-check", action="store_true")
     ap.add_argument("--input-check", action="store_true")
     ap.add_argument("--play", action="store_true")
     ap.add_argument("--size", default=f"{W}x{H}")
@@ -222,6 +235,11 @@ def main():
 
     if args.check:
         code = run_check()
+        pygame.quit()
+        return code
+
+    if args.market_check:
+        code = run_market_check()
         pygame.quit()
         return code
 

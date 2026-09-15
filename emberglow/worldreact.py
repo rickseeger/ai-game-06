@@ -20,7 +20,7 @@ from __future__ import annotations
 
 from typing import Dict, FrozenSet
 
-from .scene import Room as SceneRoom, Prop, Glow, build_room_gate
+from .scene import Room as SceneRoom, Prop, Glow, build_room_gate, build_room_market
 
 # Object id -> prop kind for the generic (marker/rock) rooms, so the important
 # objects read distinctly even before their dedicated art lands in node 6.
@@ -65,7 +65,7 @@ def apply_beats(world, room: SceneRoom, rid: str, flags: FrozenSet[str]) -> Scen
 
     # --- lens_ready: the forge flashes a bright warm light --------------------
     if rid == "market" and "lens_ready" in F:
-        room.props.append(Prop("forge_flash", 6, 3))
+        room.props.append(Prop("forge_flash", 6, 3, h=1))
 
     # --- seed_taken: the greenhouse seed-bed dims -----------------------------
     if rid == "greenhouse":
@@ -100,6 +100,8 @@ def build_scene_room(world, rid: str, flags: FrozenSet[str]) -> SceneRoom:
     if rid == "gate":
         room = build_room_gate()
         room.props = [p for p in room.props if p.kind != "player"]
+    elif rid == "market":
+        room = build_room_market()
     else:
         room = generic_scene(world, rid)
     # baseline ambient glows + fireflies for the non-gate rooms

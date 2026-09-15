@@ -319,6 +319,104 @@ def build_fence(gx, gy):
 
 
 # --------------------------------------------------------------------------- #
+
+
+
+# --------------------------------------------------------------------------- #
+# Forge Market props + the forge-smith (node 16)
+# --------------------------------------------------------------------------- #
+def build_forge(gx, gy):
+    s = new_surf(150, 140)
+    # chimney (russet brick) with a dark cap
+    rect(s, PALETTE["russet"], (82, 10, 28, 42))
+    rect(s, darken(PALETTE["russet"], 0.78), (79, 4, 34, 8))
+    # main brick kiln body
+    rect(s, PALETTE["russet"], (18, 42, 96, 82))
+    for y in (56, 72, 88, 104):
+        rect(s, darken(PALETTE["russet"], 0.82), (18, y, 96, 3))
+    rect(s, mix(PALETTE["russet"], PALETTE["twilight_violet"], 0.22), (18, 110, 96, 14))
+    # hearth mouth (dark opening + layered warm glow)
+    polygon(s, PALETTE["bark_brown"], [(28, 72), (74, 72), (68, 112), (34, 112)])
+    polygon(s, PALETTE["hearth_amber"], [(36, 80), (66, 80), (62, 106), (40, 106)])
+    polygon(s, PALETTE["honey_gold"], [(42, 88), (60, 88), (58, 102), (44, 102)])
+    circle(s, PALETTE["firefly_glow"], 51, 95, 6)
+    # anvil (bark-brown) beside the body
+    polygon(s, PALETTE["bark_brown"], [(108, 62), (140, 62), (144, 92), (124, 102), (104, 92)])
+    rect(s, darken(PALETTE["bark_brown"], 0.8), (108, 62, 34, 6))
+    # warm rim light NW
+    polygon(s, lighten(PALETTE["russet"], 0.16), [(18, 42), (30, 42), (18, 124), (18, 42)])
+    painterly_repaint(s, (18, 42, 96, 82), PALETTE["russet"], gx, gy)
+    return finish(s)
+
+
+def build_forge_kiln(gx, gy):
+    s = new_surf(96, 70)
+    rect(s, PALETTE["russet"], (8, 14, 80, 48))
+    for y in (26, 38, 50):
+        rect(s, darken(PALETTE["russet"], 0.82), (8, y, 80, 3))
+    rect(s, mix(PALETTE["russet"], PALETTE["twilight_violet"], 0.22), (8, 50, 80, 12))
+    # stacked firewood on top
+    polygon(s, PALETTE["bark_brown"], [(50, 14), (84, 14), (84, 26), (50, 26)])
+    polygon(s, lighten(PALETTE["russet"], 0.16), [(8, 14), (20, 14), (8, 62), (8, 14)])
+    painterly_repaint(s, (8, 14, 80, 48), PALETTE["russet"], gx, gy)
+    return finish(s)
+
+
+def build_stall(gx, gy):
+    s = new_surf(92, 78)
+    # pumpkin canvas awning with a scalloped bottom edge
+    ellipse(s, PALETTE["pumpkin"], (6, 4, 80, 34))
+    for x in (14, 26, 38, 50, 62):
+        circle(s, darken(PALETTE["pumpkin"], 0.8), x, 38, 6)
+    for x in (22, 40, 58):
+        rect(s, PALETTE["honey_gold"], (x, 6, 7, 32))
+    # stall front (cream) + counter (russet) + side posts
+    rect(s, PALETTE["cream_parch"], (16, 38, 60, 32))
+    rect(s, PALETTE["russet"], (12, 42, 68, 8))
+    rect(s, PALETTE["bark_brown"], (18, 30, 6, 40))
+    rect(s, PALETTE["bark_brown"], (68, 30, 6, 40))
+    # goods on the counter
+    circle(s, PALETTE["pumpkin"], 30, 40, 5)
+    circle(s, PALETTE["honey_gold"], 44, 38, 4)
+    circle(s, PALETTE["moss_green"], 58, 40, 5)
+    painterly_repaint(s, (6, 4, 80, 34), PALETTE["pumpkin"], gx, gy)
+    painterly_repaint(s, (16, 38, 60, 32), PALETTE["cream_parch"], gx, gy)
+    return finish(s)
+
+
+def build_crate(gx, gy):
+    s = new_surf(48, 44)
+    rect(s, PALETTE["russet"], (6, 12, 36, 26))
+    rect(s, darken(PALETTE["russet"], 0.75), (6, 20, 36, 2))
+    rect(s, darken(PALETTE["russet"], 0.75), (6, 28, 36, 2))
+    polygon(s, PALETTE["bark_brown"], [(6, 12), (18, 12), (6, 38), (6, 12)])
+    polygon(s, PALETTE["bark_brown"], [(42, 12), (30, 12), (42, 38), (42, 12)])
+    circle(s, PALETTE["pumpkin"], 24, 8, 6)
+    circle(s, PALETTE["honey_gold"], 36, 6, 4)
+    painterly_repaint(s, (6, 12, 36, 26), PALETTE["russet"], gx, gy)
+    return finish(s)
+
+
+def build_bramble(gx, gy):
+    s = new_surf(82, 98)
+    # stocky smith: fern shirt + russet apron
+    ellipse(s, PALETTE["fern_deep"], (20, 28, 42, 62))
+    polygon(s, PALETTE["russet"], [(24, 46), (58, 46), (54, 92), (28, 92)])
+    # head + beard + eye + pumpkin bandana
+    circle(s, PALETTE["cream_parch"], 41, 22, 10)
+    polygon(s, PALETTE["bark_brown"], [(31, 28), (51, 28), (47, 44), (35, 44)])
+    circle(s, darken(PALETTE["cream_parch"], 0.85), 37, 24, 2)
+    rect(s, PALETTE["pumpkin"], (30, 12, 22, 6))
+    # hammer (bark handle + russet head)
+    rect(s, PALETTE["bark_brown"], (58, 40, 5, 32))
+    rect(s, PALETTE["russet"], (50, 36, 20, 9))
+    # warm rim light NW
+    polygon(s, lighten(PALETTE["russet"], 0.16), [(24, 46), (32, 46), (24, 92), (24, 46)])
+    painterly_repaint(s, (24, 46, 34, 46), PALETTE["russet"], gx, gy)
+    painterly_repaint(s, (20, 28, 42, 62), PALETTE["fern_deep"], gx, gy)
+    return finish(s)
+
+
 # Characters
 # --------------------------------------------------------------------------- #
 def build_mallow(gx, gy):
@@ -409,6 +507,8 @@ def get_sprite(kind, gx=0, gy=0):
             "rock": build_rock, "grass_tuft": build_grass_tuft,
             "flower": build_flower, "fence": build_fence,
             "mallow": build_mallow, "player": build_player,
+            "forge": build_forge, "forge_kiln": build_forge_kiln,
+            "stall": build_stall, "crate": build_crate, "bramble": build_bramble,
             "marker": build_marker,
             "seed": build_seed, "seed_bed": build_seed_bed, "water": build_water,
             "forge_flash": build_forge_flash, "stair_light": build_stair_light,
@@ -450,11 +550,15 @@ def build_water(gx, gy):
 
 
 def build_forge_flash(gx, gy):
-    """A solid warm flash over the forge (lens_ready): opaque, pixel-samplable."""
-    s = new_surf(56, 56)
-    circle(s, PALETTE["hearth_amber"], 28, 28, 26)
-    circle(s, PALETTE["honey_gold"], 28, 28, 17)
-    circle(s, PALETTE["firefly_glow"], 28, 28, 9)
+    """A solid warm flash over the forge (lens_ready): opaque, pixel-samplable.
+
+    Large and gold-dominant so the burst spills warm light past the forge's own
+    always-on hearth glow and is unambiguously brighter (the lens_ready beat).
+    """
+    s = new_surf(96, 96)
+    circle(s, PALETTE["hearth_amber"], 48, 48, 46)
+    circle(s, PALETTE["honey_gold"], 48, 48, 34)
+    circle(s, PALETTE["firefly_glow"], 48, 48, 12)
     return finish(s)
 
 

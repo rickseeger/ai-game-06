@@ -195,9 +195,14 @@ def _is_water(c):
 
 
 def _is_gold(c):
-    """Bright warm gold / amber (honey_gold / hearth_amber flash)."""
+    """Bright warm gold / amber (honey_gold / hearth_amber flash).
+
+    r >= g keeps green-yellow firefly glow out; g > 120 + b < 110 keep it warm.
+    Saturated warm highlights (additive glow over a flash) still count as gold --
+    a brighter forge is still a warm forge, never a cool one.
+    """
     r, g, b = c
-    return r > 200 and 120 < g < 220 and b < 110
+    return r > 200 and r >= g and g > 120 and b < 110
 
 
 def _is_russet(c):
@@ -310,6 +315,187 @@ def world_beat_checks():
 
     beats["all_beats_distinct"] = all(b["changed"] for b in beats.values())
     return beats
+
+
+def market_feature_presence(surface, room, ox, oy):
+    """Confirm the Forge Market's key props are actually drawn (palette hit in box)."""
+    from .sprites import get_sprite
+    from .geometry import prop_anchor
+    feats = {}
+    for kind, gx, gy, name in [
+        ("forge", 6, 3, "russet"),      # brick kiln body
+        ("stall", 2, 1, "pumpkin"),     # canvas awning
+        ("crate", 2, 5, "russet"),      # wooden crate
+        ("bramble", 2, 3, "fern_deep"), # the smith's shirt
+    ]:
+        p = next(pp for pp in room.props if pp.kind == kind and pp.gx == gx and pp.gy == gy)
+        fx, fy = prop_anchor(gx, gy, p.h, ox, oy)
+        spr = get_sprite(kind, gx, gy)
+        x0, y0 = fx - spr.get_width() // 2, fy - spr.get_height() + 2
+        target = PALETTE[name]
+        hit = total = 0
+        for py in range(max(0, y0), min(surface.get_height(), y0 + spr.get_height()), 2):
+            for px in range(max(0, x0), min(surface.get_width(), x0 + spr.get_width()), 2):
+                total += 1
+                if dE(surface.get_at((px, py))[:3], target) <= 60:
+                    hit += 1
+        feats[f"{kind}@{gx},{gy}:{name}"] = {
+            "hits": hit, "total": total,
+            "frac": round(hit / max(1, total), 3),
+            "present": hit > 20,
+        }
+    return feats
+
+
+def market_draw_order_checks(room, t, ox, oy):
+    """Painter's-algorithm checks for a room with no static player prop."""
+    draw = build_drawables(room, t, ox, oy)
+    ordered = depth_sorted(draw)
+    tiles = [(d[0], d[2]) for d in ordered if d[1] == "tile"]
+    sums = [gx + gy for _, (gx, gy, _, _) in tiles]
+    mono = all(a <= b for a, b in zip(sums, sums[1:]))
+    props_after_own_tile = all(
+        d[0] > depth_key(d[2].gx, d[2].gy, LAYER_TILE)
+        for d in ordered if d[1] == "prop")
+    far = min((d for d in ordered if d[1] == "prop"), key=lambda d: d[2].gx + d[2].gy)
+    near = max((d for d in ordered if d[1] == "prop"), key=lambda d: d[2].gx + d[2].gy)
+    return {
+        "tile_order_monotonic": mono,
+        "props_after_own_tile": props_after_own_tile,
+        "far_before_near": far[0] < near[0],
+        "far_prop": far[2].kind, "near_prop": near[2].kind,
+        "drawable_count": len(ordered),
+    }
+
+
+def raised_tile_extrusion_check():
+    """2.5D unit check: a raised tile's side face is darker than its top face."""
+    from .scene import draw_tile
+    s = pygame.Surface((128, 64), pygame.SRCALPHA)
+    draw_tile(s, 1, 1, PALETTE["cream_parch"], 1, 0, 0)
+    # tile at iso(1,1,0,0)=(0,32); top face blitted at (0,16), side faces below.
+    top = s.get_at((32, 24))          # top face (raised), opaque cream
+    side = s.get_at((48, 48))         # SE side face (darkened cream), opaque
+    side_opaque = s.get_at((48, 48))[3] > 0
+    return {"top_rgb": list(top[:3]), "side_rgb": list(side[:3]),
+            "side_opaque": side_opaque,
+            "side_darker_than_top": side_opaque and sum(top[:3]) > sum(side[:3])}
+
+
+def market_scene_checks():
+    """Node 16: render + verify the Forge Market room (no vision tool).
+
+    Renders headlessly (SDL dummy driver), samples pixels for palette/lighting
+    invariants, asserts fixed-isometric geometry + painter's draw order + 2.5D
+    extrusion + prop presence, dumps a frame + ASCII structure map, and writes
+    evidence/market_check.json. Returns the results dict (with a boolean "ok").
+    """
+    from .scene import build_room_market, render_room, layout
+    from . import ui
+    from .world import World
+    import json as _json, os as _os
+
+    room = build_room_market()
+    t0 = 0.0
+    ox, oy = layout(room, 1280, 720)
+    surface = pygame.Surface((1280, 720))
+    render_room(surface, room, t0, ox, oy)
+    w, h = surface.get_size()
+
+    stats = _count_pixels(surface)
+    geom = geometry_checks(room, ox, oy)
+    order = market_draw_order_checks(room, t0, ox, oy)
+    fills = {
+        "square_tile": flat_fill_check(surface, 2, 4, ox, oy, "cream_parch"),
+        "grass_tile": flat_fill_check(surface, 8, 4, ox, oy, "moss_green"),
+    }
+    extrude = raised_tile_extrusion_check()
+    feats = market_feature_presence(surface, room, ox, oy)
+
+    # determinism + animation actually changes the frame
+    s0b = pygame.Surface((w, h))
+    render_room(s0b, room, t0, ox, oy)
+    ident = pygame.image.tobytes(surface, "RGB") == pygame.image.tobytes(s0b, "RGB")
+    s1 = pygame.Surface((w, h))
+    render_room(s1, room, 0.4, ox, oy)
+    animated = pygame.image.tobytes(surface, "RGB") != pygame.image.tobytes(s1, "RGB")
+
+    # sky corner is cool violet (B >= R), never black
+    corner = surface.get_at((5, 5))[:3]
+    corner_violet = corner[2] >= corner[0] and corner[2] > 40
+
+    # UI frame (dump) + interface presence
+    ui_surface = pygame.Surface((w, h))
+    render_room(ui_surface, room, t0, ox, oy)
+    ui.draw_ui(ui_surface, room, ["", "", "", "", ""], 0, "Bramble",
+               "The forge burns low -- bring me mill-water and I'll temper the lens.")
+    ui_check = ui_presence(ui_surface)
+
+    # lens_ready beat: the forge flashes clearly warmer (gold) when the lens is ready
+    from . import worldreact
+    world = World()
+    room_flash = worldreact.build_scene_room(world, "market", frozenset({"lens_ready"}))
+    fsurf = pygame.Surface((w, h))
+    render_room(fsurf, room_flash, t0, ox, oy)
+    gold_before = _surface_count(surface, _is_gold)
+    gold_after = _surface_count(fsurf, _is_gold)
+
+    results = {
+        "size": [w, h],
+        "features": feats,
+        "ui": ui_check,
+        "unique_colors": stats["unique_colors"],
+        "counts": {k: v for k, v in stats.items() if k != "unique_colors"},
+        "geometry": geom,
+        "draw_order": order,
+        "flat_fills": fills,
+        "extrusion": extrude,
+        "forge_plinth_heights": {str(k): v for k, v in sorted(room.heights.items())},
+        "sky_corner_rgb": list(corner), "sky_corner_violet": corner_violet,
+        "deterministic": ident,
+        "animation_changes_frame": animated,
+        "lens_ready": {
+            "gold_px_before": gold_before, "gold_px_after": gold_after,
+            "changed": gold_after > gold_before + 30,
+        },
+    }
+
+    checks_dict = {
+        "size_is_1280x720": (w, h) == (1280, 720),
+        "not_blank": stats["unique_colors"] > 800,
+        "warm_surfaces_present": stats["warm"] > 5000,
+        "cool_violet_ambient_present": stats["cool"] > 20000,
+        "foliage_present": stats["foliage"] > 2000,
+        "firefly_glow_present": stats["glow"] > 3,
+        "warm_lantern_glow_present": stats["warm_glow"] > 200,
+        "no_pure_black": stats["black"] == 0,
+        "square_tile_on_palette": fills["square_tile"]["within_tolerance"],
+        "grass_tile_on_palette": fills["grass_tile"]["within_tolerance"],
+        "raised_tile_extrudes": extrude["side_darker_than_top"] and extrude["side_opaque"],
+        "forge_plinth_raised": all(v == 1 for v in room.heights.values()),
+        "sky_corner_violet": corner_violet,
+        "iso_slope_2_to_1": geom["iso_slope_2_to_1"],
+        "diamond_2_to_1": geom["diamond_2_to_1"],
+        "tile_order_monotonic": order["tile_order_monotonic"],
+        "props_after_own_tile": order["props_after_own_tile"],
+        "far_before_near": order["far_before_near"],
+        "characters_and_props_present": all(f["present"] for f in feats.values()),
+        "interface_present": ui_check["interface_present"],
+        "deterministic": ident,
+        "animation_changes_frame": animated,
+        "lens_ready_flash": results["lens_ready"]["changed"],
+    }
+    results["checks"] = checks_dict
+    results["ok"] = all(checks_dict.values())
+
+    _os.makedirs("evidence", exist_ok=True)
+    pygame.image.save(ui_surface, "evidence/market_scene.png")
+    pygame.image.save(surface, "evidence/market_scene_room.png")
+    with open("evidence/market_scene.ascii.txt", "w") as f:
+        f.write(ascii_map(surface) + "\n")
+    with open("evidence/market_check.json", "w") as f:
+        _json.dump(results, f, indent=2)
+    return results
 
 
 def feedback_tone_check():

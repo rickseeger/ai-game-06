@@ -2776,8 +2776,8 @@
       "changed": true
     },
     "lens_ready": {
-      "gold_px_before": 18,
-      "gold_px_after": 183,
+      "gold_px_before": 1075,
+      "gold_px_after": 1224,
       "changed": true
     },
     "seed_taken": {
@@ -2791,8 +2791,8 @@
       "changed": true
     },
     "lantern_lit": {
-      "gold_px_before": 21,
-      "gold_px_after": 391,
+      "gold_px_before": 27,
+      "gold_px_after": 631,
       "changed": true
     },
     "ended": {

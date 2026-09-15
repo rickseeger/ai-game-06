@@ -134,11 +134,13 @@ dismisses dialogue, Q quits.
     python3 -m emberglow.main --headless      # one frame -> evidence/scene_gate.png
     python3 -m emberglow.main --capture 6     # animation frames -> evidence/
     python3 -m emberglow.main --check         # render + full automated verification
+    python3 -m emberglow.main --market-check  # node 16: Forge Market scene verification
 
 ## Verify (automated, no vision)
 
     python3 -m unittest discover tests        # projection / palette / occlusion / input / verbs
     python3 -m emberglow.main --check         # pixel sampling + geometry + draw order + beats
+    python3 -m emberglow.main --market-check  # node 16: Forge Market room render + geometry + props
     python3 -m emberglow.main --input-check   # node 4: key mapping + press/release
     python3 tools/demo_input.py               # node 4: actual-input runtime trace + frame dumps
     python3 tools/demo_traversal.py           # node 3: traversal demo (exits 0)
@@ -186,4 +188,10 @@ pixel-sampling checks prove success-vs-failure feedback is distinct and all six
 world-reactivity beats (water_flowing, lens_ready, seed_taken, stair_open,
 lantern_lit, ended) produce distinct pixels. Remaining: per-room art polish, soft
 audio, and final human aesthetic judgment (Rick's, on Pop!_OS).
+
+Node 16 (Forge Market art) is complete and self-verifying: the market room
+is now an art-complete scene (raised brick forge hearth + anvil, canvas-
+awning stalls, crates, lantern posts, and Bramble the forge-smith) built to
+node 2's palette + visual language and wired into the live game. See
+docs/NODE16_SCENE.md; verify with `python3 -m emberglow.main --market-check`.
 

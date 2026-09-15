@@ -1,0 +1,148 @@
+{
+  "size": [
+    1280,
+    720
+  ],
+  "features": {
+    "forge@6,3:russet": {
+      "hits": 1011,
+      "total": 2068,
+      "frac": 0.489,
+      "present": true
+    },
+    "stall@2,1:pumpkin": {
+      "hits": 248,
+      "total": 696,
+      "frac": 0.356,
+      "present": true
+    },
+    "crate@2,5:russet": {
+      "hits": 43,
+      "total": 210,
+      "frac": 0.205,
+      "present": true
+    },
+    "bramble@2,3:fern_deep": {
+      "hits": 170,
+      "total": 806,
+      "frac": 0.211,
+      "present": true
+    }
+  },
+  "ui": {
+    "dialogue_cream_px": 7928,
+    "dialogue_text_px": 174,
+    "inventory_selected_glow_px": 78,
+    "interface_present": true
+  },
+  "unique_colors": 10106,
+  "counts": {
+    "warm": 41332,
+    "cool": 148375,
+    "foliage": 7725,
+    "glow": 9,
+    "warm_glow": 429,
+    "black": 0,
+    "total": 230400
+  },
+  "geometry": {
+    "iso_slope_2_to_1": true,
+    "iso_diag_symmetric": true,
+    "diamond_2_to_1": true,
+    "diamond_bounds": [
+      352,
+      200,
+      928,
+      488
+    ]
+  },
+  "draw_order": {
+    "tile_order_monotonic": true,
+    "props_after_own_tile": true,
+    "far_before_near": true,
+    "far_prop": "stall",
+    "near_prop": "flower",
+    "drawable_count": 164
+  },
+  "flat_fills": {
+    "square_tile": {
+      "sample": "cream_parch",
+      "rgb": [
+        252,
+        236,
+        211
+      ],
+      "dE": 5.9,
+      "within_tolerance": true
+    },
+    "grass_tile": {
+      "sample": "moss_green",
+      "rgb": [
+        106,
+        156,
+        74
+      ],
+      "dE": 2.2,
+      "within_tolerance": true
+    }
+  },
+  "extrusion": {
+    "top_rgb": [
+      255,
+      242,
+      218
+    ],
+    "side_rgb": [
+      171,
+      163,
+      147
+    ],
+    "side_opaque": true,
+    "side_darker_than_top": true
+  },
+  "forge_plinth_heights": {
+    "(6, 2)": 1,
+    "(6, 3)": 1,
+    "(7, 2)": 1,
+    "(7, 3)": 1
+  },
+  "sky_corner_rgb": [
+    34,
+    27,
+    49
+  ],
+  "sky_corner_violet": true,
+  "deterministic": true,
+  "animation_changes_frame": true,
+  "lens_ready": {
+    "gold_px_before": 1075,
+    "gold_px_after": 1224,
+    "changed": true
+  },
+  "checks": {
+    "size_is_1280x720": true,
+    "not_blank": true,
+    "warm_surfaces_present": true,
+    "cool_violet_ambient_present": true,
+    "foliage_present": true,
+    "firefly_glow_present": true,
+    "warm_lantern_glow_present": true,
+    "no_pure_black": true,
+    "square_tile_on_palette": true,
+    "grass_tile_on_palette": true,
+    "raised_tile_extrudes": true,
+    "forge_plinth_raised": true,
+    "sky_corner_violet": true,
+    "iso_slope_2_to_1": true,
+    "diamond_2_to_1": true,
+    "tile_order_monotonic": true,
+    "props_after_own_tile": true,
+    "far_before_near": true,
+    "characters_and_props_present": true,
+    "interface_present": true,
+    "deterministic": true,
+    "animation_changes_frame": true,
+    "lens_ready_flash": true
+  },
+  "ok": true
+}

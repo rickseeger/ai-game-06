@@ -99,6 +99,74 @@ def build_room_gate():
                 glows, fireflies)
 
 
+
+
+# --------------------------------------------------------------------------- #
+# Forge Market (node 16): a warm, busy market square -- canvas-awning stalls,
+# crates, a raised brick forge hearth with an anvil, and Bramble the forge-smith.
+# Matches node 2's Hollow Gate scene in palette + visual language (painterly tiles,
+# warm/cool two-light model, Firefly-Glow halos on interactables, fireflies).
+# --------------------------------------------------------------------------- #
+def build_room_market():
+    grid = 9
+    # paved market square + paths to the west (gate) and north (mill) portals
+    square = {
+        (1, 2), (2, 2), (3, 2), (4, 2), (5, 2),
+        (1, 3), (3, 3), (4, 3), (5, 3),
+        (1, 4), (2, 4), (3, 4), (4, 4), (5, 4), (6, 4), (7, 4),
+        (1, 5), (3, 5), (4, 5), (6, 5), (7, 5),
+        (1, 6), (2, 6), (3, 6), (4, 6), (5, 6), (6, 6), (7, 6),
+        (3, 7), (4, 7), (7, 7),
+    }
+    path_to_mill = {(3, 1), (4, 1)}
+    forge_plinth = {(6, 2), (7, 2), (6, 3), (7, 3)}   # raised stone plinth
+    path = square | path_to_mill | forge_plinth
+
+    # the forge block sits on a raised (h=1) stone platform -> 2.5D extrusion
+    heights = {cell: 1 for cell in forge_plinth}
+
+    props = [
+        # the forge (NE): raised brick hearth + anvil -- the market's warm heart
+        Prop("forge", 6, 3, h=1, interactable=True, glow="hearth_amber"),
+        Prop("forge_kiln", 6, 2, h=1),
+        Prop("forge_kiln", 7, 2, h=1),
+        Prop("forge_kiln", 7, 3, h=1),
+        # canvas-awning stalls along the north and south edges
+        Prop("stall", 1, 1), Prop("stall", 2, 1), Prop("stall", 5, 1),
+        Prop("stall", 6, 1), Prop("stall", 7, 1),
+        Prop("stall", 1, 7), Prop("stall", 2, 7), Prop("stall", 5, 7),
+        Prop("stall", 6, 7),
+        # crates / barrels
+        Prop("crate", 2, 5), Prop("crate", 5, 5),
+        # warm lantern posts
+        Prop("lantern_post", 4, 4, glow="hearth_amber"),
+        Prop("lantern_post", 3, 6, glow="hearth_amber"),
+        # ambient greenery + ground props
+        Prop("mushroom", 1, 6), Prop("mushroom", 7, 6), Prop("mushroom", 0, 7),
+        Prop("rock", 6, 6), Prop("rock", 0, 3),
+        Prop("grass_tuft", 2, 6), Prop("grass_tuft", 5, 4), Prop("grass_tuft", 6, 5),
+        Prop("grass_tuft", 1, 2), Prop("grass_tuft", 3, 7), Prop("grass_tuft", 8, 2),
+        Prop("flower", 1, 5), Prop("flower", 7, 5), Prop("flower", 4, 6),
+        Prop("flower", 3, 3), Prop("flower", 8, 6),
+        # Bramble, the forge-smith (character, part of the art)
+        Prop("bramble", 2, 3, interactable=True, glow="hearth_amber"),
+    ]
+
+    glows = [
+        Glow(6.0, 3.0, "hearth_amber", 74, 120),   # forge hearth (warm, not blinding)
+        Glow(6.0, 3.0, "honey_gold", 46, 80),       # forge inner glow
+        Glow(4.0, 4.0, "hearth_amber", 60, 60),    # lantern post
+        Glow(3.0, 6.0, "hearth_amber", 52, 52),    # lantern post
+        Glow(2.0, 3.0, "hearth_amber", 42, 50),    # Bramble's forge-light
+    ]
+
+    fireflies = [(1.6, 2.4), (5.3, 1.8), (3.2, 3.1), (4.8, 4.6), (6.8, 4.2),
+                 (2.4, 5.8), (7.2, 5.4), (3.6, 6.6)]
+
+    return Room(grid, "Forge Market", "a warm forge under canvas", heights, path,
+                props, glows, fireflies)
+
+
 # --------------------------------------------------------------------------- #
 # Drawable list (pure, testable) + painter's sort
 # --------------------------------------------------------------------------- #
